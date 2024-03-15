@@ -26,8 +26,7 @@ buildSrc/build
 /src/asciidoc/build
 spring-test/test-output/
 
-# Maven artifacts
-pom.xml
+# Maven artifacts (excluding pom.xml)
 /target/
 
 # Eclipse artifacts, including WTP generated manifests
