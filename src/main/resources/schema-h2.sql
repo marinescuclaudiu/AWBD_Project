@@ -1,77 +1,79 @@
 CREATE TABLE Address (
-                         Id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                         Street INTEGER NOT NULL,
-                         District VARCHAR(255),
-                         City INTEGER NOT NULL,
-                         ZipCode INTEGER NOT NULL,
-                         Country VARCHAR(255)
+                         id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                         street VARCHAR(50),
+                         city VARCHAR(50),
+                         district VARCHAR(50),
+                         zip_code VARCHAR(50),
+                         country VARCHAR(50)
 );
 
 CREATE TABLE Product (
-                         Id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                         Name VARCHAR(255) NOT NULL,
-                         Description TEXT,
-                         Price INTEGER NOT NULL,
-                         Photo VARCHAR(255),
-                         Color VARCHAR(255)
+                         id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                         name VARCHAR(50),
+                         description TEXT,
+                         price DOUBLE,
+                         photo LONGBLOB,
+                         color VARCHAR(50)
 );
 
 CREATE TABLE Category (
-                          Id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                          Name VARCHAR(255) NOT NULL
+                          id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                          name VARCHAR(255)
 );
 
-CREATE TABLE UserProfile (
-                             Id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                             FirstName VARCHAR(255),
-                             LastName VARCHAR(255),
-                             PhoneNumber VARCHAR(255)
+CREATE TABLE `user` (
+                        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                        email VARCHAR(255),
+                        password VARCHAR(255)
 );
 
-CREATE TABLE `User` (
-                      Id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                      UserProfileID INTEGER,
-                      Email VARCHAR(255) NOT NULL,
-                      Password VARCHAR(255) NOT NULL,
-                      FOREIGN KEY (UserProfileID) REFERENCES UserProfile(UserProfileID)
+CREATE TABLE user_profile (
+                              id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                              user_id BIGINT,
+                              first_name VARCHAR(255),
+                              last_name VARCHAR(255),
+                              phone_number VARCHAR(255),
+                              FOREIGN KEY (user_id) REFERENCES `user`(id)
+
 );
+
 
 CREATE TABLE Review (
-                        Id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                        ProductID INTEGER NOT NULL,
-                        UserID INTEGER NOT NULL,
-                        Rating INTEGER NOT NULL,
-                        Content TEXT,
-                        Date TIMESTAMP NOT NULL,
-                        FOREIGN KEY (ProductID) REFERENCES Product(ProductID),
-                        FOREIGN KEY (UserID) REFERENCES User(UserID)
+                        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                        product_id BIGINT,
+                        user_id BIGINT,
+                        rating DOUBLE,
+                        content TEXT,
+                        date DATE,
+                        FOREIGN KEY (product_id) REFERENCES Product(id),
+                        FOREIGN KEY (user_id) REFERENCES `user`(id)
 );
 
-CREATE TABLE `Order` (
-                            Id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                            UserID INTEGER NOT NULL,
-                            AddressID INTEGER NOT NULL,
-                            TotalAmount INTEGER NOT NULL,
-                            OrderDate TIMESTAMP NOT NULL,
-                            PaymentMethod VARCHAR(255) NOT NULL,
-                            FOREIGN KEY (UserID) REFERENCES User(UserID),
-                            FOREIGN KEY (AddressID) REFERENCES Address(AddressID)
+CREATE TABLE `order` (
+                         id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                         user_id BIGINT,
+                         address_id BIGINT,
+                         total_amount DOUBLE,
+                         order_date DATE,
+                         payment_method VARCHAR(20),
+                         FOREIGN KEY (user_id) REFERENCES `user`(id),
+                         FOREIGN KEY (address_id) REFERENCES Address(id)
 );
 
-CREATE TABLE OrderProduct (
-                              Id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                              ProductID INTEGER NOT NULL,
-                              OrderID INTEGER NOT NULL,
-                              Quantity INTEGER NOT NULL,
-                              TotalPrice INTEGER NOT NULL,
-                              FOREIGN KEY (ProductID) REFERENCES Product(ProductID),
-                              FOREIGN KEY (OrderID) REFERENCES OrderTable(OrderID) -- Referencing the corrected "OrderTable" name
+CREATE TABLE order_product (
+                               id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                               product_id BIGINT,
+                               order_id BIGINT,
+                               quantity INTEGER,
+                               total_price DOUBLE,
+                               FOREIGN KEY (product_id) REFERENCES Product(id),
+                               FOREIGN KEY (order_id) REFERENCES `order`(id)
 );
 
-CREATE TABLE ProductCategory (
-                                 ProductID INTEGER NOT NULL,
-                                 CategoryID INTEGER NOT NULL,
-                                 FOREIGN KEY (ProductID) REFERENCES Product(ProductID),
-                                 FOREIGN KEY (CategoryID) REFERENCES Category(CategoryID),
-                                 PRIMARY KEY (ProductID, CategoryID)
+CREATE TABLE product_category (
+                                  product_id BIGINT,
+                                  category_id BIGINT,
+                                  FOREIGN KEY (product_id) REFERENCES Product(id),
+                                  FOREIGN KEY (category_id) REFERENCES Category(id),
+                                  PRIMARY KEY (product_id, category_id)
 );

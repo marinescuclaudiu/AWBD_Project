@@ -10,10 +10,12 @@ public class UserProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String firstName;
     private String lastName;
     private String phoneNumber;
 
-    @OneToOne(mappedBy = "userProfile")
+    @OneToOne
+    @JoinColumn(name = "user_id")
     private User user;
 }

@@ -16,7 +16,7 @@ public class Product {
     private String description;
     private Float price;
     private String color;
-    private String photoLink;
+    private byte[] photo;
 
     @ManyToMany
     @JoinTable(

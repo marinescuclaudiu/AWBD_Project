@@ -13,7 +13,7 @@ public class OrderProduct {
 
     private Integer quantity;
 
-    private Float totalPrice;
+    private Double totalPrice;
 
     @ManyToOne
     @JoinColumn(name = "product_id")

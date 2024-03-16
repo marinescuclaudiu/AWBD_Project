@@ -13,7 +13,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Float totalAmount;
+    private Double totalAmount;
 
     private LocalDate orderDate;
 

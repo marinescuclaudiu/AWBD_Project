@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.awbd</groupId>
-    <artifactId>E-Commerce</artifactId>
+    <artifactId>ecommerce</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>E-Commerce</name>
-    <description>E-Commerce</description>
+    <name>ecommerce</name>
+    <description>ecommerce</description>
     <properties>
         <java.version>17</java.version>
     </properties>
@@ -72,5 +72,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
