@@ -8,6 +8,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.junit.jupiter.api.Assertions;
+
+import java.util.List;
 import java.util.Optional;
 
 @DataJpaTest
@@ -53,5 +55,16 @@ public class UserRepositoryTest {
 
         // assert
         Assertions.assertEquals("0122279478", changedUser.getUserProfile().getPhoneNumber());
+    }
+
+    @Test
+    public void findAll() {
+        // arrange
+
+        // act
+        List<User> users = userRepository.findAll();
+
+        // assert
+        Assertions.assertEquals(4, users.size());
     }
 }

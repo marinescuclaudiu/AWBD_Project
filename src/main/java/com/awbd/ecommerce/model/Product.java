@@ -1,5 +1,6 @@
 package com.awbd.ecommerce.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -26,9 +27,11 @@ public class Product {
     )
     private Set<Category> categories;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "product")
     private Set<Review> reviews;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "product")
     private List<OrderProduct> orderProducts;
 

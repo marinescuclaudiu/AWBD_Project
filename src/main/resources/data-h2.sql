@@ -10,6 +10,9 @@ insert into product_category (product_id, category_id) values(1,2);
 insert into product_category (product_id, category_id) values(2,2);
 
 insert into `user` (id, email) values (1, 'john_snow@gmail.com');
+insert into `user` (id, email) values (2, 'adriana_lima@gmail.com');
+insert into `user` (id, email) values (3, 'alessandra_ambrosio@gmail.com');
+insert into `user` (id, email) values (4, 'david_north@gmail.com');
 
 insert into user_profile (id, user_id, first_name, last_name) values (1, 1, 'John', 'Snow');
 

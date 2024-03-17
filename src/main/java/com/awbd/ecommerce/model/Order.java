@@ -1,5 +1,6 @@
 package com.awbd.ecommerce.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -28,6 +29,7 @@ public class Order {
     @JoinColumn(name = "address_id")
     private Address address;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "order")
     private List<OrderProduct> orderProducts;
 
