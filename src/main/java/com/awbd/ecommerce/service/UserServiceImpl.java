@@ -20,8 +20,8 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserDTO save(UserDTO user) {
-        User savedUser = userRepository.save(modelMapper.map(user, User.class));
+    public UserDTO save(UserDTO userDTO) {
+        User savedUser = userRepository.save(modelMapper.map(userDTO, User.class));
         return modelMapper.map(savedUser, UserDTO.class);
     }
 
@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserDTO update(Long id, UserDTO user) {
+    public UserDTO update(Long id, UserDTO userDTO) {
         return null;
     }
 }

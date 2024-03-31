@@ -25,11 +25,11 @@ public class UserProfileServiceImpl implements UserProfileService{
     }
 
     @Override
-    public UserProfileDTO save(UserProfileDTO userProfile) {
-        User user = userRepository.findById(userProfile.getUserId())
-                .orElseThrow(()->new RuntimeException("User with id " + userProfile.getUserId() + " doesn't exist"));
+    public UserProfileDTO save(UserProfileDTO userProfileDTO) {
+        User user = userRepository.findById(userProfileDTO.getUserId())
+                .orElseThrow(()->new RuntimeException("User with id " + userProfileDTO.getUserId() + " doesn't exist"));
 
-        UserProfile savedUserProfile = userProfileRepository.save(modelMapper.map(userProfile, UserProfile.class));
+        UserProfile savedUserProfile = userProfileRepository.save(modelMapper.map(userProfileDTO, UserProfile.class));
         user.setUserProfile(savedUserProfile);
 
         return modelMapper.map(savedUserProfile, UserProfileDTO.class);
@@ -61,7 +61,7 @@ public class UserProfileServiceImpl implements UserProfileService{
     }
 
     @Override
-    public UserProfileDTO update(Long id, UserProfileDTO userProfile) {
+    public UserProfileDTO update(Long id, UserProfileDTO userProfileDTO) {
         return null;
     }
 }

@@ -17,8 +17,8 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> save(@RequestBody UserDTO user) {
-        return ResponseEntity.ok().body(userService.save(user));
+    public ResponseEntity<UserDTO> save(@RequestBody UserDTO userDTO) {
+        return ResponseEntity.ok().body(userService.save(userDTO));
     }
 
     @GetMapping("/{id}")
@@ -28,8 +28,8 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<List<UserDTO>> findAll() {
-        List<UserDTO> users = userService.findAll();
-        return ResponseEntity.ok().body(users);
+        List<UserDTO> userDTOS = userService.findAll();
+        return ResponseEntity.ok().body(userDTOS);
     }
 
     @DeleteMapping("/{id}")

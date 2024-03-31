@@ -17,8 +17,8 @@ public class UserProfileController {
     }
 
     @PostMapping
-    public ResponseEntity<UserProfileDTO> save(@RequestBody UserProfileDTO userProfile) {
-        return ResponseEntity.ok().body(userProfileService.save(userProfile));
+    public ResponseEntity<UserProfileDTO> save(@RequestBody UserProfileDTO userProfileDTO) {
+        return ResponseEntity.ok().body(userProfileService.save(userProfileDTO));
     }
 
     @GetMapping("/{id}")
@@ -28,8 +28,8 @@ public class UserProfileController {
 
     @GetMapping
     public ResponseEntity<List<UserProfileDTO>> findAll() {
-        List<UserProfileDTO> userProfiles = userProfileService.findAll();
-        return ResponseEntity.ok().body(userProfiles);
+        List<UserProfileDTO> userProfileDTOS = userProfileService.findAll();
+        return ResponseEntity.ok().body(userProfileDTOS);
     }
 
     @DeleteMapping("/{id}")

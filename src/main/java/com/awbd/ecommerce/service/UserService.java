@@ -5,9 +5,9 @@ import com.awbd.ecommerce.dto.UserDTO;
 import java.util.List;
 
 public interface UserService {
-    UserDTO save(UserDTO user);
+    UserDTO save(UserDTO userDTO);
     List<UserDTO> findAll();
     UserDTO findById(Long id);
     void deleteById(Long id);
-    UserDTO update(Long id, UserDTO user);
+    UserDTO update(Long id, UserDTO userDTO);
 }
