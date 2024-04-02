@@ -6,7 +6,6 @@ import com.awbd.ecommerce.repository.ProductRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,7 +39,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDTO findById(Long l) {
         Optional<Product> productOptional = productRepository.findById(l);
-        if (!productOptional.isPresent()) {
+        if (productOptional.isEmpty()) {
             throw new RuntimeException("Product not found!");
         }
         return modelMapper.map(productOptional.get(), ProductDTO.class);
