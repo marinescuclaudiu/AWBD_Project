@@ -1,7 +1,9 @@
 package com.awbd.ecommerce.service;
 
 import com.awbd.ecommerce.dto.ProductDTO;
+import com.awbd.ecommerce.dto.ReviewDTO;
 import com.awbd.ecommerce.model.Product;
+import com.awbd.ecommerce.model.Review;
 import com.awbd.ecommerce.repository.ProductRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -61,5 +63,13 @@ public class ProductServiceImpl implements ProductService {
         //TODO: edit the new products from the bd
 
         return modelMapper.map(product.get(), ProductDTO.class);
+    }
+
+    @Override
+    public List<ReviewDTO> getReviewsOfProductByProductId(Long id) {
+        List<Review> reviewsOfProduct = productRepository.getReviewsOfProductByProductId(id);
+        return reviewsOfProduct.stream()
+                .map(review -> modelMapper.map(review, ReviewDTO.class))
+                .collect(Collectors.toList());
     }
 }

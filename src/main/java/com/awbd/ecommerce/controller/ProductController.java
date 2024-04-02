@@ -1,9 +1,9 @@
 package com.awbd.ecommerce.controller;
 
 import com.awbd.ecommerce.dto.ProductDTO;
+import com.awbd.ecommerce.dto.ReviewDTO;
 import com.awbd.ecommerce.service.ProductService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +27,14 @@ public class ProductController {
     public ResponseEntity<ProductDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok().body(
                 productService.findById(id)
+        );
+    }
+
+    //TODO: infinite loop error
+    @GetMapping("/{id}/reviews")
+    public ResponseEntity<List<ReviewDTO>> findReviewsByProductId(@PathVariable Long id) {
+        return ResponseEntity.ok().body(
+                productService.getReviewsOfProductByProductId(id)
         );
     }
 

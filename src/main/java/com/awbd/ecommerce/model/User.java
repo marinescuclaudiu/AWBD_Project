@@ -17,7 +17,6 @@ public class User {
     private String email;
     private String password;
 
-    @JsonIgnore
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private UserProfile userProfile;
 
