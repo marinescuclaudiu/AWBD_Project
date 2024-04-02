@@ -7,7 +7,7 @@ public enum PaymentMethod {
     BANK_TRANSFER("BANK TRANSFER"),
     CASH_ON_DELIVERY("CASH ON DELIVERY");
 
-    private String description;
+    final private String description;
 
     PaymentMethod(String description) {
         this.description = description;
