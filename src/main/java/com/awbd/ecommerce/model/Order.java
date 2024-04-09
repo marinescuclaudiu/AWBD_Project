@@ -14,7 +14,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Double totalAmount;
+    private Float totalAmount;
 
     private LocalDate orderDate;
 
@@ -30,7 +30,7 @@ public class Order {
     private Address address;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order",  cascade = CascadeType.PERSIST)
     private List<OrderProduct> orderProducts;
 
 }

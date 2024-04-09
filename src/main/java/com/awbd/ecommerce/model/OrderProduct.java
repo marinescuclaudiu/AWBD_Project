@@ -1,9 +1,12 @@
 package com.awbd.ecommerce.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @Entity
 @Table(name = "order_product")
 public class OrderProduct {
@@ -13,7 +16,7 @@ public class OrderProduct {
 
     private Integer quantity;
 
-    private Double totalPrice;
+    private Float totalPrice;
 
     @ManyToOne
     @JoinColumn(name = "product_id")
@@ -22,4 +25,11 @@ public class OrderProduct {
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
+
+    public OrderProduct(Integer quantity, Float totalPrice, Product product, Order order){
+        this.quantity = quantity;
+        this.totalPrice = totalPrice;
+        this.product = product;
+        this.order = order;
+    }
 }
