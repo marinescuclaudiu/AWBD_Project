@@ -2,10 +2,12 @@ package com.awbd.ecommerce.service;
 
 import com.awbd.ecommerce.dto.ProductDTO;
 import com.awbd.ecommerce.dto.ReviewDTO;
+import com.awbd.ecommerce.helper.BeanHelper;
 import com.awbd.ecommerce.model.Product;
 import com.awbd.ecommerce.model.Review;
 import com.awbd.ecommerce.repository.ProductRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -53,16 +55,15 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDTO update(Long id, ProductDTO newProduct) {
-        Optional<Product> product = productRepository.findById(id);
+    public ProductDTO update(Long id, ProductDTO productDTO) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Order with id " + id + "doesn't exists"));
 
-        if(product.isEmpty()) {
-            throw new RuntimeException("Product not found!");
-        }
+        BeanUtils.copyProperties(productDTO, product, BeanHelper.getNullPropertyNames(productDTO));
 
-        //TODO: edit the new products from the bd
+        productRepository.save(product);
 
-        return modelMapper.map(product.get(), ProductDTO.class);
+        return modelMapper.map(product, ProductDTO.class);
     }
 
     @Override

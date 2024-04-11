@@ -50,4 +50,9 @@ public class ProductController {
         productService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ProductDTO> update(@PathVariable Long id, @RequestBody ProductDTO productDTO){
+        return ResponseEntity.ok().body(productService.update(id, productDTO));
+    }
 }

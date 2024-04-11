@@ -1,9 +1,13 @@
 package com.awbd.ecommerce.service;
 
+import com.awbd.ecommerce.dto.OrderDTO;
 import com.awbd.ecommerce.dto.ReviewDTO;
+import com.awbd.ecommerce.helper.BeanHelper;
+import com.awbd.ecommerce.model.Order;
 import com.awbd.ecommerce.model.Review;
 import com.awbd.ecommerce.repository.ReviewRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -52,22 +56,14 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public ReviewDTO update(Long id, ReviewDTO newReview) {
-        Optional<Review> reviewOptional = reviewRepository.findById(id);
+    public ReviewDTO update(Long id, ReviewDTO reviewDTO) {
+        Review review = reviewRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Review with id " + id + "doesn't exists"));
 
-        if(reviewOptional.isEmpty()) {
-            throw new RuntimeException("Product not found!");
-        }
+        BeanUtils.copyProperties(reviewDTO, review, BeanHelper.getNullPropertyNames(reviewDTO));
 
-        //TODO: edit the new review from the bd in a simpler way
+        reviewRepository.save(review);
 
-        Review dbReview = reviewOptional.get();
-        dbReview.setRating(newReview.getRating());
-        dbReview.setContent(newReview.getContent());
-        dbReview.setDate(newReview.getDate());
-        dbReview.setUser(newReview.getUser());
-        dbReview.setProduct(newReview.getProduct());
-
-        return modelMapper.map(dbReview, ReviewDTO.class);
+        return modelMapper.map(review, ReviewDTO.class);
     }
 }

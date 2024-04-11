@@ -1,9 +1,11 @@
 package com.awbd.ecommerce.service;
 
 import com.awbd.ecommerce.dto.UserDTO;
+import com.awbd.ecommerce.helper.BeanHelper;
 import com.awbd.ecommerce.model.User;
 import com.awbd.ecommerce.repository.UserRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -52,6 +54,13 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserDTO update(Long id, UserDTO userDTO) {
-        return null;
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User with id " + id + "doesn't exists"));
+
+        BeanUtils.copyProperties(userDTO, user, BeanHelper.getNullPropertyNames(userDTO));
+
+        userRepository.save(user);
+
+        return modelMapper.map(user, UserDTO.class);
     }
 }

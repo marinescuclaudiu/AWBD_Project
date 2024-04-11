@@ -1,6 +1,7 @@
 package com.awbd.ecommerce.controller;
 
 import com.awbd.ecommerce.dto.ReviewDTO;
+import com.awbd.ecommerce.dto.UserDTO;
 import com.awbd.ecommerce.service.ReviewService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -49,6 +50,11 @@ public class ReviewController {
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         reviewService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ReviewDTO> update(@PathVariable Long id, @RequestBody ReviewDTO reviewDTO){
+        return ResponseEntity.ok().body(reviewService.update(id, reviewDTO));
     }
 
 }

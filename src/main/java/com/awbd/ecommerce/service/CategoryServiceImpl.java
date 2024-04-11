@@ -1,9 +1,13 @@
 package com.awbd.ecommerce.service;
 
 import com.awbd.ecommerce.dto.CategoryDTO;
+import com.awbd.ecommerce.dto.UserProfileDTO;
+import com.awbd.ecommerce.helper.BeanHelper;
 import com.awbd.ecommerce.model.Category;
+import com.awbd.ecommerce.model.UserProfile;
 import com.awbd.ecommerce.repository.CategoryRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -50,18 +54,14 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDTO update(Long id, CategoryDTO newCategory) {
-        Optional<Category> categoryOptional = categoryRepository.findById(id);
+    public CategoryDTO update(Long id, CategoryDTO categoryDTO) {
+        Category category = categoryRepository.findById(id)
+                        .orElseThrow(() -> new RuntimeException("Category with id " + id + " doesn't exists"));
 
-        if(categoryOptional.isEmpty()) {
-            throw new RuntimeException("Category not found!");
-        }
+        BeanUtils.copyProperties(categoryDTO, category, BeanHelper.getNullPropertyNames(categoryDTO));
 
-        //TODO: edit the new category from the bd in a simpler way
+        categoryRepository.save(category);
 
-        Category dbCategory = categoryOptional.get();
-        dbCategory.setName(newCategory.getName());
-
-        return modelMapper.map(dbCategory, CategoryDTO.class);
+        return modelMapper.map(category, CategoryDTO.class);
     }
 }

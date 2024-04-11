@@ -10,6 +10,6 @@ public interface ProductService {
     List<ProductDTO> findAll();
     ProductDTO findById(Long l);
     void deleteById(Long id);
-    ProductDTO update(Long id, ProductDTO newProduct);
+    ProductDTO update(Long id, ProductDTO productDTO);
     List<ReviewDTO> getReviewsOfProductByProductId(Long id);
 }

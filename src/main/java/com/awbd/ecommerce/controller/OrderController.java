@@ -1,6 +1,7 @@
 package com.awbd.ecommerce.controller;
 
 import com.awbd.ecommerce.dto.OrderDTO;
+import com.awbd.ecommerce.dto.UserDTO;
 import com.awbd.ecommerce.service.OrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,5 +37,10 @@ public class OrderController {
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         orderService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<OrderDTO> update(@PathVariable Long id, @RequestBody OrderDTO orderDTO){
+        return ResponseEntity.ok().body(orderService.update(id, orderDTO));
     }
 }

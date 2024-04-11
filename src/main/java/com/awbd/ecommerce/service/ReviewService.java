@@ -12,5 +12,5 @@ public interface ReviewService {
     ReviewDTO findById(Long l);
     void deleteById(Long id);
 
-    ReviewDTO update(Long id, ReviewDTO newReview);
+    ReviewDTO update(Long id, ReviewDTO reviewDTO);
 }

@@ -1,11 +1,14 @@
 package com.awbd.ecommerce.service;
 
+import com.awbd.ecommerce.dto.UserDTO;
 import com.awbd.ecommerce.dto.UserProfileDTO;
+import com.awbd.ecommerce.helper.BeanHelper;
 import com.awbd.ecommerce.model.User;
 import com.awbd.ecommerce.model.UserProfile;
 import com.awbd.ecommerce.repository.UserProfileRepository;
 import com.awbd.ecommerce.repository.UserRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -62,6 +65,13 @@ public class UserProfileServiceImpl implements UserProfileService{
 
     @Override
     public UserProfileDTO update(Long id, UserProfileDTO userProfileDTO) {
-        return null;
+        UserProfile userProfile = userProfileRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException(("User with id " + id + " doesn't exists")));
+
+        BeanUtils.copyProperties(userProfileDTO, userProfile, BeanHelper.getNullPropertyNames(userProfileDTO));
+
+        userProfileRepository.save(userProfile);
+
+        return modelMapper.map(userProfile, UserProfileDTO.class);
     }
 }

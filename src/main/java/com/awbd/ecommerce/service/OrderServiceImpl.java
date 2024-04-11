@@ -1,12 +1,15 @@
 package com.awbd.ecommerce.service;
 
+import com.awbd.ecommerce.dto.CategoryDTO;
 import com.awbd.ecommerce.dto.OrderDTO;
 import com.awbd.ecommerce.dto.OrderProductDTO;
+import com.awbd.ecommerce.helper.BeanHelper;
 import com.awbd.ecommerce.mapper.OrderMapper;
 import com.awbd.ecommerce.model.*;
 import com.awbd.ecommerce.repository.*;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -118,6 +121,13 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public OrderDTO update(Long id, OrderDTO orderDTO) {
-        return null;
+        Order order = orderRepository.findById(id)
+                        .orElseThrow(() -> new RuntimeException("Order with id"  + id + "doesn't exists"));
+
+        BeanUtils.copyProperties(orderDTO, order, BeanHelper.getNullPropertyNames(orderDTO));
+
+        orderRepository.save(order);
+
+        return modelMapper.map(order, OrderDTO.class);
     }
 }

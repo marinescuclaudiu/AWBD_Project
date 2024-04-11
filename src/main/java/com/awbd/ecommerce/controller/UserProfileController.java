@@ -1,5 +1,6 @@
 package com.awbd.ecommerce.controller;
 
+import com.awbd.ecommerce.dto.UserDTO;
 import com.awbd.ecommerce.dto.UserProfileDTO;
 import com.awbd.ecommerce.service.UserProfileService;
 import org.springframework.http.ResponseEntity;
@@ -36,5 +37,10 @@ public class UserProfileController {
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         userProfileService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<UserProfileDTO> update(@PathVariable Long id, @RequestBody UserProfileDTO userProfileDTO){
+        return ResponseEntity.ok().body(userProfileService.update(id, userProfileDTO));
     }
 }
