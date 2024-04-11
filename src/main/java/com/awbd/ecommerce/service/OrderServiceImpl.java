@@ -1,8 +1,8 @@
 package com.awbd.ecommerce.service;
 
-import com.awbd.ecommerce.dto.CategoryDTO;
 import com.awbd.ecommerce.dto.OrderDTO;
 import com.awbd.ecommerce.dto.OrderProductDTO;
+import com.awbd.ecommerce.exception.ResourceNotFoundException;
 import com.awbd.ecommerce.helper.BeanHelper;
 import com.awbd.ecommerce.mapper.OrderMapper;
 import com.awbd.ecommerce.model.*;
@@ -62,12 +62,12 @@ public class OrderServiceImpl implements OrderService{
                 orderProducts.add(new OrderProduct(orderProductDTO.getQuantity(), product.getPrice() * orderProductDTO.getQuantity(), product, order));
                 totalAmount += product.getPrice() * orderProductDTO.getQuantity();
             } else {
-                throw new RuntimeException("Product with id " + orderProductDTO.getProductId() + " doesn't exist");
+                throw new ResourceNotFoundException("Product with id " + orderProductDTO.getProductId() + " not found!");
             }
         }
 
         User user = userRepository.findById(orderDTO.getUserId())
-                .orElseThrow(()->new RuntimeException("User with id " + orderDTO.getUserId() + " doesn't exist"));
+                .orElseThrow(()->new ResourceNotFoundException("User with id " + orderDTO.getUserId() + " not found!"));
 
         Optional<Address> existingAddress = addressRepository.findByStreetAndCityAndZipCodeAndCountryAndDistrict(
                 orderDTO.getAddressDTO().getStreet(),
@@ -106,7 +106,7 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public OrderDTO findById(Long id) {
         Order order = orderRepository.findById(id)
-                .orElseThrow(()->new RuntimeException("Order with id " + id + " doesn't exist"));
+                .orElseThrow(()->new ResourceNotFoundException("Order with id " + id + " not found!"));
 
         return modelMapper.map(order, OrderDTO.class);
     }
@@ -114,15 +114,16 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public void deleteById(Long id) {
         if (!orderRepository.existsById(id)) {
-            throw new RuntimeException("Order with id " + id + " doesn't exist");
+            throw new ResourceNotFoundException("Order with id " + id + " not found!");
         }
+
         orderRepository.deleteById(id);
     }
 
     @Override
     public OrderDTO update(Long id, OrderDTO orderDTO) {
         Order order = orderRepository.findById(id)
-                        .orElseThrow(() -> new RuntimeException("Order with id"  + id + "doesn't exists"));
+                        .orElseThrow(() -> new ResourceNotFoundException("Order with id"  + id + " not found!"));
 
         BeanUtils.copyProperties(orderDTO, order, BeanHelper.getNullPropertyNames(orderDTO));
 

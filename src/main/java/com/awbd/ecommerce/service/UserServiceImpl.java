@@ -1,6 +1,7 @@
 package com.awbd.ecommerce.service;
 
 import com.awbd.ecommerce.dto.UserDTO;
+import com.awbd.ecommerce.exception.ResourceNotFoundException;
 import com.awbd.ecommerce.helper.BeanHelper;
 import com.awbd.ecommerce.model.User;
 import com.awbd.ecommerce.repository.UserRepository;
@@ -39,7 +40,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserDTO findById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(()->new RuntimeException("User with id " + id + " doesn't exist"));
+                .orElseThrow(()->new ResourceNotFoundException("User with id " + id + " not found!"));
 
         return modelMapper.map(user, UserDTO.class);
     }
@@ -47,15 +48,16 @@ public class UserServiceImpl implements UserService{
     @Override
     public void deleteById(Long id) {
         if (!userRepository.existsById(id)) {
-            throw new RuntimeException("User with id " + id + " doesn't exist");
+            throw new ResourceNotFoundException("User with id " + id + " not found!");
         }
+
         userRepository.deleteById(id);
     }
 
     @Override
     public UserDTO update(Long id, UserDTO userDTO) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User with id " + id + "doesn't exists"));
+                .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found!"));
 
         BeanUtils.copyProperties(userDTO, user, BeanHelper.getNullPropertyNames(userDTO));
 

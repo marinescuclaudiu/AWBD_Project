@@ -9,7 +9,7 @@ public interface ReviewService {
 
     List<ReviewDTO> findAll();
 
-    ReviewDTO findById(Long l);
+    ReviewDTO findById(Long id);
     void deleteById(Long id);
 
     ReviewDTO update(Long id, ReviewDTO reviewDTO);

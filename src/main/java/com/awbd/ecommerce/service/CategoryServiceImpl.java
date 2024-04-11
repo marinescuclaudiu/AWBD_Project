@@ -1,17 +1,15 @@
 package com.awbd.ecommerce.service;
 
 import com.awbd.ecommerce.dto.CategoryDTO;
-import com.awbd.ecommerce.dto.UserProfileDTO;
+import com.awbd.ecommerce.exception.ResourceNotFoundException;
 import com.awbd.ecommerce.helper.BeanHelper;
 import com.awbd.ecommerce.model.Category;
-import com.awbd.ecommerce.model.UserProfile;
 import com.awbd.ecommerce.repository.CategoryRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,23 +38,26 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDTO findById(Long l) {
-        Optional<Category> categoryOptional = categoryRepository.findById(l);
-        if (categoryOptional.isEmpty()) {
-            throw new RuntimeException("Category not found!");
-        }
-        return modelMapper.map(categoryOptional.get(), CategoryDTO.class);
+    public CategoryDTO findById(Long id) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() ->  new ResourceNotFoundException("Category with " + id + " not found!"));
+
+        return modelMapper.map(category, CategoryDTO.class);
     }
 
     @Override
     public void deleteById(Long id) {
+        if (!categoryRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Category with id " + id + " not found!");
+        }
+
         categoryRepository.deleteById(id);
     }
 
     @Override
     public CategoryDTO update(Long id, CategoryDTO categoryDTO) {
         Category category = categoryRepository.findById(id)
-                        .orElseThrow(() -> new RuntimeException("Category with id " + id + " doesn't exists"));
+                        .orElseThrow(() -> new ResourceNotFoundException("Category with id " + id + " not found!"));
 
         BeanUtils.copyProperties(categoryDTO, category, BeanHelper.getNullPropertyNames(categoryDTO));
 

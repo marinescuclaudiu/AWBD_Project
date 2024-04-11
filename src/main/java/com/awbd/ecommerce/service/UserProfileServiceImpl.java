@@ -1,7 +1,7 @@
 package com.awbd.ecommerce.service;
 
-import com.awbd.ecommerce.dto.UserDTO;
 import com.awbd.ecommerce.dto.UserProfileDTO;
+import com.awbd.ecommerce.exception.ResourceNotFoundException;
 import com.awbd.ecommerce.helper.BeanHelper;
 import com.awbd.ecommerce.model.User;
 import com.awbd.ecommerce.model.UserProfile;
@@ -30,7 +30,7 @@ public class UserProfileServiceImpl implements UserProfileService{
     @Override
     public UserProfileDTO save(UserProfileDTO userProfileDTO) {
         User user = userRepository.findById(userProfileDTO.getUserId())
-                .orElseThrow(()->new RuntimeException("User with id " + userProfileDTO.getUserId() + " doesn't exist"));
+                .orElseThrow(()->new ResourceNotFoundException("User with id " + userProfileDTO.getUserId() + " not found!"));
 
         UserProfile savedUserProfile = userProfileRepository.save(modelMapper.map(userProfileDTO, UserProfile.class));
         user.setUserProfile(savedUserProfile);
@@ -50,7 +50,7 @@ public class UserProfileServiceImpl implements UserProfileService{
     @Override
     public UserProfileDTO findById(Long id) {
         UserProfile userProfile = userProfileRepository.findById(id)
-                .orElseThrow(()->new RuntimeException("User profile with id " + id + " doesn't exist"));
+                .orElseThrow(()->new ResourceNotFoundException("User profile with id " + id + " not found!"));
 
         return modelMapper.map(userProfile, UserProfileDTO.class);
     }
@@ -58,15 +58,16 @@ public class UserProfileServiceImpl implements UserProfileService{
     @Override
     public void deleteById(Long id) {
         if (!userProfileRepository.existsById(id)) {
-            throw new RuntimeException("User profile with id " + id + " doesn't exist");
+            throw new ResourceNotFoundException("User profile with id " + id + " not found!");
         }
+
         userProfileRepository.deleteById(id);
     }
 
     @Override
     public UserProfileDTO update(Long id, UserProfileDTO userProfileDTO) {
         UserProfile userProfile = userProfileRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(("User with id " + id + " doesn't exists")));
+                .orElseThrow(() -> new ResourceNotFoundException(("User with id " + id + " not found!")));
 
         BeanUtils.copyProperties(userProfileDTO, userProfile, BeanHelper.getNullPropertyNames(userProfileDTO));
 

@@ -1,8 +1,6 @@
 package com.awbd.ecommerce.service;
 
 import com.awbd.ecommerce.dto.CategoryDTO;
-import com.awbd.ecommerce.dto.ProductDTO;
-import com.awbd.ecommerce.repository.CategoryRepository;
 
 import java.util.List;
 
@@ -11,7 +9,7 @@ public interface CategoryService {
 
     List<CategoryDTO> findAll();
 
-    CategoryDTO findById(Long l);
+    CategoryDTO findById(Long id);
 
     void deleteById(Long id);
 

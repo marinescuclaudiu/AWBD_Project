@@ -1,9 +1,8 @@
 package com.awbd.ecommerce.service;
 
-import com.awbd.ecommerce.dto.OrderDTO;
 import com.awbd.ecommerce.dto.ReviewDTO;
+import com.awbd.ecommerce.exception.ResourceNotFoundException;
 import com.awbd.ecommerce.helper.BeanHelper;
-import com.awbd.ecommerce.model.Order;
 import com.awbd.ecommerce.model.Review;
 import com.awbd.ecommerce.repository.ReviewRepository;
 import org.modelmapper.ModelMapper;
@@ -11,7 +10,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,23 +40,26 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public ReviewDTO findById(Long l) {
-        Optional<Review> reviewOptional = reviewRepository.findById(l);
-        if (reviewOptional.isEmpty()) {
-            throw new RuntimeException("Review not found!");
-        }
-        return modelMapper.map(reviewOptional.get(), ReviewDTO.class);
+    public ReviewDTO findById(Long id) {
+        Review review  = reviewRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Review with id " + id + " not found!"));
+
+        return modelMapper.map(review,  ReviewDTO.class);
     }
 
     @Override
     public void deleteById(Long id) {
+        if (!reviewRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Review with id " + id + " not found!");
+        }
+
         reviewRepository.deleteById(id);
     }
 
     @Override
     public ReviewDTO update(Long id, ReviewDTO reviewDTO) {
         Review review = reviewRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Review with id " + id + "doesn't exists"));
+                .orElseThrow(() -> new ResourceNotFoundException("Review with id " + id + " not found!"));
 
         BeanUtils.copyProperties(reviewDTO, review, BeanHelper.getNullPropertyNames(reviewDTO));
 
