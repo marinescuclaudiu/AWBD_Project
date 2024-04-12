@@ -95,6 +95,11 @@
             <artifactId>font-awesome</artifactId>
             <version>6.4.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.30</version>
+        </dependency>
         <!-- thymeleaf dependencies -->
 
     </dependencies>

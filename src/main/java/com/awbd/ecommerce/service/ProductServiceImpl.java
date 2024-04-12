@@ -11,7 +11,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -71,7 +74,15 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ReviewDTO> getReviewsOfProductByProductId(Long id) {
+        Optional<Product> theProduct = productRepository.findById(id);
+
+        if(theProduct.isEmpty()) {
+            throw new RuntimeException("Product not found!");
+        }
+
+        // extract the reviews
         List<Review> reviewsOfProduct = productRepository.getReviewsOfProductByProductId(id);
+
         return reviewsOfProduct.stream()
                 .map(review -> modelMapper.map(review, ReviewDTO.class))
                 .collect(Collectors.toList());

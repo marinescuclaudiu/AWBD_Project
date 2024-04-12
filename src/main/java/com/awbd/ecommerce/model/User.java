@@ -2,11 +2,16 @@ package com.awbd.ecommerce.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
 import java.util.Set;
-@Data
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
+@Getter
+@Builder
 @Entity
 @Table(name = "\"user\"")
 public class User {

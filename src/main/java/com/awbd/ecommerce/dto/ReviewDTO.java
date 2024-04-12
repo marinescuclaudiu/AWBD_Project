@@ -18,6 +18,5 @@ public class ReviewDTO {
     private double rating;
     private String content;
     private LocalDate date;
-    private User user;
-    private Product product;
+//    private User user;
 }

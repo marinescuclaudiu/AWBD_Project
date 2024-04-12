@@ -11,6 +11,6 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    @Query("SELECT r FROM Review r JOIN r.product p WHERE p.id = :id")
+    @Query("SELECT r FROM Review r INNER JOIN r.product p WHERE p.id = :id")
     List<Review> getReviewsOfProductByProductId(Long id);
 }
