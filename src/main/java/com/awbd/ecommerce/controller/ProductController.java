@@ -30,7 +30,6 @@ public class ProductController {
         );
     }
 
-    //TODO: infinite loop error
     @GetMapping("/{id}/reviews")
     public ResponseEntity<List<ReviewDTO>> findReviewsByProductId(@PathVariable Long id) {
         return ResponseEntity.ok().body(
