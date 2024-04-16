@@ -5,14 +5,18 @@ import com.awbd.ecommerce.exception.ResourceNotFoundException;
 import com.awbd.ecommerce.helper.BeanHelper;
 import com.awbd.ecommerce.model.Category;
 import com.awbd.ecommerce.repository.CategoryRepository;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class CategoryServiceImpl implements CategoryService {
     CategoryRepository categoryRepository;
     ModelMapper modelMapper;
@@ -22,16 +26,22 @@ public class CategoryServiceImpl implements CategoryService {
         this.modelMapper = modelMapper;
     }
 
-
+    @Transactional
     @Override
     public CategoryDTO save(CategoryDTO categoryDTO) {
+        log.info("Saving category: {}", categoryDTO.getName());
         Category savedCategory = categoryRepository.save(modelMapper.map(categoryDTO, Category.class));
+
+        log.info("Category saved: {}", savedCategory.getName());
         return modelMapper.map(savedCategory, CategoryDTO.class);
     }
 
     @Override
     public List<CategoryDTO> findAll() {
+        log.info("Fetching all categories");
         List<Category> categories = categoryRepository.findAll();
+
+        log.info("Found {} categories", categories.size());
         return categories.stream().map(
                 category -> modelMapper.map(category, CategoryDTO.class))
                 .collect(Collectors.toList());
@@ -39,30 +49,48 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDTO findById(Long id) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() ->  new ResourceNotFoundException("Category with " + id + " not found!"));
+        log.info("Fetching category by ID: {}", id);
+        Optional<Category> category = categoryRepository.findById(id);
 
-        return modelMapper.map(category, CategoryDTO.class);
+        if(category.isEmpty()){
+            log.error("Category with id {} not found!", id);
+            throw  new ResourceNotFoundException("Category with " + id + " not found!");
+        }
+
+        log.info("Category found: {}", category.get().getName());
+        return modelMapper.map(category.get(), CategoryDTO.class);
     }
 
+    @Transactional
     @Override
     public void deleteById(Long id) {
+        log.info("Deleting category by ID: {}", id);
+
         if (!categoryRepository.existsById(id)) {
+            log.error("Category with id {} not found", id);
             throw new ResourceNotFoundException("Category with id " + id + " not found!");
         }
 
         categoryRepository.deleteById(id);
+        log.info("Category deleted successfully");
     }
 
+    @Transactional
     @Override
     public CategoryDTO update(Long id, CategoryDTO categoryDTO) {
-        Category category = categoryRepository.findById(id)
-                        .orElseThrow(() -> new ResourceNotFoundException("Category with id " + id + " not found!"));
+        log.info("Updating category with ID: {}", id);
+        Optional<Category> category = categoryRepository.findById(id);
 
-        BeanUtils.copyProperties(categoryDTO, category, BeanHelper.getNullPropertyNames(categoryDTO));
+        if(category.isEmpty()){
+            log.error("Category with id {} not found", id);
+            throw new ResourceNotFoundException("Category with id " + id + " not found!");
+        }
 
-        categoryRepository.save(category);
+        BeanUtils.copyProperties(categoryDTO, category.get(), BeanHelper.getNullPropertyNames(categoryDTO));
 
-        return modelMapper.map(category, CategoryDTO.class);
+        categoryRepository.save(category.get());
+
+        log.info("Category updated: {}", category.get().getName());
+        return modelMapper.map(category.get(), CategoryDTO.class);
     }
 }

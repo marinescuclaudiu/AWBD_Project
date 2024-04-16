@@ -7,17 +7,20 @@ import com.awbd.ecommerce.helper.BeanHelper;
 import com.awbd.ecommerce.model.Product;
 import com.awbd.ecommerce.model.Review;
 import com.awbd.ecommerce.repository.ProductRepository;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class ProductServiceImpl implements ProductService {
     ProductRepository productRepository;
-
     ModelMapper modelMapper;
 
     public ProductServiceImpl(ProductRepository productRepository, ModelMapper modelMapper) {
@@ -25,16 +28,22 @@ public class ProductServiceImpl implements ProductService {
         this.modelMapper = modelMapper;
     }
 
+    @Transactional
     @Override
-    public ProductDTO save(ProductDTO product) {
-        Product savedProduct = productRepository.save(modelMapper.map(product, Product.class));
+    public ProductDTO save(ProductDTO productDTO) {
+        log.info("Saving product: {}", productDTO.getName());
+        Product savedProduct = productRepository.save(modelMapper.map(productDTO, Product.class));
+
+        log.info("Product saved: {}", productDTO.getName());
         return modelMapper.map(savedProduct, ProductDTO.class);
     }
 
     @Override
     public List<ProductDTO> findAll() {
+        log.info("Fetching all products");
         List<Product> products = productRepository.findAll();
 
+        log.info("Found {} products", products.size());
         return products.stream()
                 .map(product -> modelMapper.map(product, ProductDTO.class))
                 .collect(Collectors.toList());
@@ -42,40 +51,63 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDTO findById(Long id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product with id" + id + " not found!"));
+        log.info("Fetching product by ID: {}", id);
+        Optional<Product> product = productRepository.findById(id);
 
-        return modelMapper.map(product, ProductDTO.class);
+        if(product.isEmpty()){
+            log.error("Product with id {} not found!", id);
+            throw new ResourceNotFoundException("Product with id" + id + " not found!");
+        }
+
+        log.info("Product found: {}", product.get().getName());
+        return modelMapper.map(product.get(), ProductDTO.class);
     }
 
+    @Transactional
     @Override
     public void deleteById(Long id) {
+        log.info("Deleting product by ID: {}", id);
+
         if (!productRepository.existsById(id)) {
+            log.error("Product with id {} not found", id);
             throw new ResourceNotFoundException("Product with id " + id + " not found!");
         }
 
         productRepository.deleteById(id);
+        log.info("Product deleted successfully");
     }
 
+    @Transactional
     @Override
     public ProductDTO update(Long id, ProductDTO productDTO) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found!"));
+        log.info("Updating product with ID: {}", id);
+        Optional<Product> product = productRepository.findById(id);
 
-        BeanUtils.copyProperties(productDTO, product, BeanHelper.getNullPropertyNames(productDTO));
+        if(product.isEmpty()){
+            log.error("Product with id {} not found", id);
+            throw new ResourceNotFoundException("Product with id " + id + " not found!");
+        }
 
-        productRepository.save(product);
+        BeanUtils.copyProperties(productDTO, product.get(), BeanHelper.getNullPropertyNames(productDTO));
 
-        return modelMapper.map(product, ProductDTO.class);
+        productRepository.save(product.get());
+
+        log.info("Product updated: {}", product.get().getName());
+        return modelMapper.map(product.get(), ProductDTO.class);
     }
 
     @Override
     public List<ReviewDTO> getReviewsOfProductByProductId(Long id) {
-      productRepository.findById(id)
-              .orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found!"));
+        log.info("Fetching all reviews for product with id: {}", id);
+
+        if (!productRepository.existsById(id)) {
+            log.error("Product with id {} not found", id);
+            throw new ResourceNotFoundException("Product with id " + id + " not found!");
+        }
 
         List<Review> reviewsOfProduct = productRepository.getReviewsOfProductByProductId(id);
 
+        log.info("Found {} reviews", reviewsOfProduct.size());
         return reviewsOfProduct.stream()
                 .map(review -> modelMapper.map(review, ReviewDTO.class))
                 .collect(Collectors.toList());

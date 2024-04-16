@@ -1,46 +1,45 @@
 package com.awbd.ecommerce.controller;
 
-import com.awbd.ecommerce.dto.UserDTO;
 import com.awbd.ecommerce.dto.UserProfileDTO;
 import com.awbd.ecommerce.service.UserProfileService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/user-profiles")
 public class UserProfileController {
-    UserProfileService userProfileService;
+    private UserProfileService userProfileService;
 
     public UserProfileController(UserProfileService userProfileService) {
         this.userProfileService = userProfileService;
     }
 
-    @PostMapping
-    public ResponseEntity<UserProfileDTO> save(@RequestBody UserProfileDTO userProfileDTO) {
+    @PostMapping("admin_user/user_profile")
+    public ResponseEntity<UserProfileDTO> save(@Valid @RequestBody UserProfileDTO userProfileDTO) {
         return ResponseEntity.ok().body(userProfileService.save(userProfileDTO));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("admin/user_profile/{id}")
     public ResponseEntity<UserProfileDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok().body(userProfileService.findById(id));
     }
 
-    @GetMapping
-    public ResponseEntity<List<UserProfileDTO>> findAll() {
+    @GetMapping("admin/user_profiles")
+    public ResponseEntity<List<UserProfileDTO>> getAll() {
         List<UserProfileDTO> userProfileDTOS = userProfileService.findAll();
         return ResponseEntity.ok().body(userProfileDTOS);
     }
 
-    @DeleteMapping("/{id}")
+    @PatchMapping("admin_user/user_profile/{id}")
+    public ResponseEntity<UserProfileDTO> update(@PathVariable Long id, @Valid @RequestBody UserProfileDTO userProfileDTO){
+        return ResponseEntity.ok().body(userProfileService.update(id, userProfileDTO));
+    }
+
+    @DeleteMapping("admin_user/user_profile/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         userProfileService.deleteById(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @PatchMapping("/{id}")
-    public ResponseEntity<UserProfileDTO> update(@PathVariable Long id, @RequestBody UserProfileDTO userProfileDTO){
-        return ResponseEntity.ok().body(userProfileService.update(id, userProfileDTO));
     }
 }

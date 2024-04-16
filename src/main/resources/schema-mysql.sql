@@ -34,7 +34,8 @@ CREATE TABLE Category (
 CREATE TABLE `user` (
                         id BIGINT AUTO_INCREMENT PRIMARY KEY,
                         email VARCHAR(255),
-                        password VARCHAR(255)
+                        password VARCHAR(255),
+                        role VARCHAR (255)
 );
 
 CREATE TABLE user_profile (
