@@ -1,9 +1,5 @@
-package com.awbd.ecommerce.controller;
+package com.awbd.ecommerce.exception;
 
-import com.awbd.ecommerce.exception.AuthenticationFailedException;
-import com.awbd.ecommerce.exception.DatabaseErrorException;
-import com.awbd.ecommerce.exception.EmailAlreadyExistsException;
-import com.awbd.ecommerce.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
