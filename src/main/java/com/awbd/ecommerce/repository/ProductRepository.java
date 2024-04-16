@@ -1,6 +1,5 @@
 package com.awbd.ecommerce.repository;
 
-import com.awbd.ecommerce.dto.ReviewDTO;
 import com.awbd.ecommerce.model.Product;
 import com.awbd.ecommerce.model.Review;
 import org.springframework.data.jpa.repository.JpaRepository;

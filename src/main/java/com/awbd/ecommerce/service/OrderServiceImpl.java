@@ -17,13 +17,13 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService{
-    OrderRepository orderRepository;
-    OrderProductRepository orderProductRepository;
-    ProductRepository productRepository;
-    AddressRepository addressRepository;
-    UserRepository userRepository;
-    ModelMapper modelMapper;
-    OrderMapper orderMapper;
+        OrderRepository orderRepository;
+        OrderProductRepository orderProductRepository;
+        ProductRepository productRepository;
+        AddressRepository addressRepository;
+        UserRepository userRepository;
+        ModelMapper modelMapper;
+        OrderMapper orderMapper;
 
     public OrderServiceImpl(OrderRepository orderRepository, OrderProductRepository orderProductRepository,
                             ProductRepository productRepository, AddressRepository addressRepository,
