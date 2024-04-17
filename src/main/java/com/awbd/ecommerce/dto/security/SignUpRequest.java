@@ -1,20 +1,13 @@
-package com.awbd.ecommerce.dto;
+package com.awbd.ecommerce.dto.security;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class UserDTO {
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long id;
-
+public class SignUpRequest {
     @NotBlank(message = "Email is required")
     @Email(message = "Email should be valid")
     private String email;
@@ -22,4 +15,8 @@ public class UserDTO {
     @NotBlank(message = "Password is required")
     @Min(value = 6, message = "Password must be at least 6 characters long")
     private String password;
+
+    @NotBlank(message = "Role is required")
+    @Pattern(regexp = "ADMIN|USER", message = "Role must be either 'ADMIN' or 'USER'")
+    private String role;
 }

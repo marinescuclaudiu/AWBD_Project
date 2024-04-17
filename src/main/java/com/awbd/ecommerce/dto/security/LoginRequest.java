@@ -1,20 +1,12 @@
-package com.awbd.ecommerce.dto;
+package com.awbd.ecommerce.dto.security;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class UserDTO {
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long id;
-
+public class LoginRequest {
     @NotBlank(message = "Email is required")
     @Email(message = "Email should be valid")
     private String email;

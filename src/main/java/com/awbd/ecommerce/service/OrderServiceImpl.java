@@ -8,6 +8,7 @@ import com.awbd.ecommerce.mapper.OrderMapper;
 import com.awbd.ecommerce.model.*;
 import com.awbd.ecommerce.repository.*;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class OrderServiceImpl implements OrderService{
         OrderRepository orderRepository;
         OrderProductRepository orderProductRepository;
@@ -37,9 +39,10 @@ public class OrderServiceImpl implements OrderService{
         this.orderMapper = orderMapper;
     }
 
-    @Override
     @Transactional
+    @Override
     public OrderDTO save(OrderDTO orderDTO) {
+        log.info("Saving new order");
         Order order = new Order();
 
         List<OrderProductDTO> orderProductDTOS = orderDTO.getOrderProductDTOS();
@@ -62,12 +65,17 @@ public class OrderServiceImpl implements OrderService{
                 orderProducts.add(new OrderProduct(orderProductDTO.getQuantity(), product.getPrice() * orderProductDTO.getQuantity(), product, order));
                 totalAmount += product.getPrice() * orderProductDTO.getQuantity();
             } else {
+                log.error("Product with id {} not found!", orderProductDTO.getProductId());
                 throw new ResourceNotFoundException("Product with id " + orderProductDTO.getProductId() + " not found!");
             }
         }
 
-        User user = userRepository.findById(orderDTO.getUserId())
-                .orElseThrow(()->new ResourceNotFoundException("User with id " + orderDTO.getUserId() + " not found!"));
+        Optional<User> user = userRepository.findById(orderDTO.getUserId());
+
+        if(user.isEmpty()){
+            log.error("Order with id {} not found!", orderDTO.getUserId());
+            throw new ResourceNotFoundException("User with id " + orderDTO.getUserId() + " not found!");
+        }
 
         Optional<Address> existingAddress = addressRepository.findByStreetAndCityAndZipCodeAndCountryAndDistrict(
                 orderDTO.getAddressDTO().getStreet(),
@@ -84,20 +92,24 @@ public class OrderServiceImpl implements OrderService{
             order.setAddress(existingAddress.get());
         }
 
-        order.setUser(user);
+        order.setUser(user.get());
         order.setOrderProducts(orderProducts);
         order.setOrderDate(orderDTO.getOrderDate());
         order.setPaymentMethod(orderDTO.getPaymentMethod());
         order.setTotalAmount(totalAmount);
 
         Order savedOrder = orderRepository.save(order);
+
+        log.info("Order with id {} saved", savedOrder.getId());
         return orderMapper.toDTO(savedOrder);
     }
 
     @Override
     public List<OrderDTO> findAll() {
+        log.info("Fetching all orders");
         List<Order> orders = orderRepository.findAll();
 
+        log.info("Found {} orders", orders.size());
         return orders.stream()
                 .map(order -> modelMapper.map(order, OrderDTO.class))
                 .collect(Collectors.toList());
@@ -105,30 +117,47 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public OrderDTO findById(Long id) {
-        Order order = orderRepository.findById(id)
-                .orElseThrow(()->new ResourceNotFoundException("Order with id " + id + " not found!"));
+        log.info("Fetching order by ID: {}", id);
+        Optional<Order> order = orderRepository.findById(id);
 
-        return modelMapper.map(order, OrderDTO.class);
+        if(order.isEmpty()){
+            log.error("Order with id {} not found!", id);
+            throw new ResourceNotFoundException("Order with id " + id + " not found!");
+        }
+
+        log.info("Order found: {}", order.get().getId());
+        return modelMapper.map(order.get(), OrderDTO.class);
     }
 
+    @Transactional
     @Override
     public void deleteById(Long id) {
+        log.info("Deleting order by ID: {}", id);
+
         if (!orderRepository.existsById(id)) {
+            log.error("Order with id {} not found", id);
             throw new ResourceNotFoundException("Order with id " + id + " not found!");
         }
 
         orderRepository.deleteById(id);
+        log.info("Order deleted successfully");
     }
 
+    @Transactional
     @Override
     public OrderDTO update(Long id, OrderDTO orderDTO) {
-        Order order = orderRepository.findById(id)
-                        .orElseThrow(() -> new ResourceNotFoundException("Order with id"  + id + " not found!"));
+        log.info("Updating category with ID: {}", id);
+        Optional<Order> order = orderRepository.findById(id);
 
-        BeanUtils.copyProperties(orderDTO, order, BeanHelper.getNullPropertyNames(orderDTO));
+        if(order.isEmpty()){
+            log.error("Order with id {} not found", id);
+            throw new  ResourceNotFoundException("Order with id"  + id + " not found!");
+        }
+        BeanUtils.copyProperties(orderDTO, order.get(), BeanHelper.getNullPropertyNames(orderDTO));
 
-        orderRepository.save(order);
+        orderRepository.save(order.get());
 
-        return modelMapper.map(order, OrderDTO.class);
+        log.info("Order updated: {}", order.get().getId());
+        return modelMapper.map(order.get(), OrderDTO.class);
     }
 }

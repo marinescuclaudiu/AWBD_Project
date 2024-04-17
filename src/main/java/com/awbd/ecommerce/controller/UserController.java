@@ -2,44 +2,39 @@ package com.awbd.ecommerce.controller;
 
 import com.awbd.ecommerce.dto.UserDTO;
 import com.awbd.ecommerce.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/users")
 public class UserController {
-    UserService userService;
+    private UserService userService;
 
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
-    @PostMapping
-    public ResponseEntity<UserDTO> save(@RequestBody UserDTO userDTO) {
-        return ResponseEntity.ok().body(userService.save(userDTO));
-    }
-
-    @GetMapping("/{id}")
+    @GetMapping("admin/user/{id}")
     public ResponseEntity<UserDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok().body(userService.findById(id));
     }
 
-    @GetMapping
-    public ResponseEntity<List<UserDTO>> findAll() {
+    @GetMapping("admin/users")
+    public ResponseEntity<List<UserDTO>> getAll() {
         List<UserDTO> userDTOS = userService.findAll();
         return ResponseEntity.ok().body(userDTOS);
     }
 
-    @DeleteMapping("/{id}")
+    @PatchMapping("admin_user/user/{id}")
+    public ResponseEntity<UserDTO> update(@PathVariable Long id, @Valid @RequestBody UserDTO userDTO){
+        return ResponseEntity.ok().body(userService.update(id, userDTO));
+    }
+
+    @DeleteMapping("admin_user/user/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         userService.deleteById(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @PatchMapping("/{id}")
-    public ResponseEntity<UserDTO> update(@PathVariable Long id, @RequestBody UserDTO userDTO){
-        return ResponseEntity.ok().body(userService.update(id, userDTO));
     }
 }

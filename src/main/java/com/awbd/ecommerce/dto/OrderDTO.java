@@ -1,12 +1,13 @@
 package com.awbd.ecommerce.dto;
 
 import com.awbd.ecommerce.model.PaymentMethod;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,22 +18,28 @@ public class OrderDTO {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
+    @NotNull(message = "User ID is required")
+    @Positive(message = "User ID must be positive")
     private Long userId;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String email;
 
+    @NotNull(message = "Address is required")
     private AddressDTO addressDTO;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDate orderDate;
 
+    @NotNull(message = "Order products are required")
+    @Min(value = 1, message = "At least one order product is required")
     private List<OrderProductDTO> orderProductDTOS;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Float totalAmount;
 
     @Enumerated(value = EnumType.STRING)
+    @NotNull(message = "Payment method is required")
     private PaymentMethod paymentMethod;
 
     public OrderDTO(){

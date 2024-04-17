@@ -1,22 +1,27 @@
 package com.awbd.ecommerce.service;
 
+import com.awbd.ecommerce.dto.CategoryDTO;
 import com.awbd.ecommerce.dto.UserProfileDTO;
 import com.awbd.ecommerce.exception.ResourceNotFoundException;
 import com.awbd.ecommerce.helper.BeanHelper;
+import com.awbd.ecommerce.model.Category;
 import com.awbd.ecommerce.model.User;
 import com.awbd.ecommerce.model.UserProfile;
 import com.awbd.ecommerce.repository.UserProfileRepository;
 import com.awbd.ecommerce.repository.UserRepository;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class UserProfileServiceImpl implements UserProfileService{
-
     UserProfileRepository userProfileRepository;
     UserRepository userRepository;
     ModelMapper modelMapper;
@@ -27,21 +32,30 @@ public class UserProfileServiceImpl implements UserProfileService{
         this.modelMapper = modelMapper;
     }
 
+    @Transactional
     @Override
     public UserProfileDTO save(UserProfileDTO userProfileDTO) {
-        User user = userRepository.findById(userProfileDTO.getUserId())
-                .orElseThrow(()->new ResourceNotFoundException("User with id " + userProfileDTO.getUserId() + " not found!"));
+        log.info("Saving user profile for user with id: {}", userProfileDTO.getUserId());
+        Optional<User> user = userRepository.findById(userProfileDTO.getUserId());
+
+        if(user.isEmpty()){
+            log.error("User with id {} not found!", userProfileDTO.getUserId());
+            throw new ResourceNotFoundException("User with id " + userProfileDTO.getUserId() + " not found!");
+        }
 
         UserProfile savedUserProfile = userProfileRepository.save(modelMapper.map(userProfileDTO, UserProfile.class));
-        user.setUserProfile(savedUserProfile);
+        user.get().setUserProfile(savedUserProfile);
 
+        log.info("User profile saved for user with id: {}", user.get().getId());
         return modelMapper.map(savedUserProfile, UserProfileDTO.class);
     }
 
     @Override
     public List<UserProfileDTO> findAll() {
+        log.info("Fetching all user profiles");
         List<UserProfile> userProfiles = userProfileRepository.findAll();
 
+        log.info("Found {} user profiles", userProfiles.size());
         return userProfiles.stream()
                 .map(userProfile -> modelMapper.map(userProfile, UserProfileDTO.class))
                 .collect(Collectors.toList());
@@ -49,30 +63,48 @@ public class UserProfileServiceImpl implements UserProfileService{
 
     @Override
     public UserProfileDTO findById(Long id) {
-        UserProfile userProfile = userProfileRepository.findById(id)
-                .orElseThrow(()->new ResourceNotFoundException("User profile with id " + id + " not found!"));
+        log.info("Fetching user profile by ID: {}", id);
+        Optional<UserProfile> userProfile = userProfileRepository.findById(id);
 
-        return modelMapper.map(userProfile, UserProfileDTO.class);
+        if(userProfile.isEmpty()){
+            log.error("User profile with id {} not found!", id);
+            throw new ResourceNotFoundException("User profile with id " + id + " not found!");
+        }
+
+        log.info("User profile with id {} found", userProfile.get().getId());
+        return modelMapper.map(userProfile.get(), UserProfileDTO.class);
     }
 
+    @Transactional
     @Override
     public void deleteById(Long id) {
+        log.info("Deleting user profile by ID: {}", id);
+
         if (!userProfileRepository.existsById(id)) {
+            log.error("User profile with id {} not found", id);
             throw new ResourceNotFoundException("User profile with id " + id + " not found!");
         }
 
         userProfileRepository.deleteById(id);
+        log.info("Category deleted successfully");
     }
 
+    @Transactional
     @Override
     public UserProfileDTO update(Long id, UserProfileDTO userProfileDTO) {
-        UserProfile userProfile = userProfileRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(("User with id " + id + " not found!")));
+        log.info("Updating user profile with ID: {}", id);
+        Optional<UserProfile> userProfile = userProfileRepository.findById(id);
 
-        BeanUtils.copyProperties(userProfileDTO, userProfile, BeanHelper.getNullPropertyNames(userProfileDTO));
+        if(userProfile.isEmpty()){
+            log.error("User profile with id {} not found", id);
+            throw new ResourceNotFoundException("User with id " + id + " not found!");
+        }
 
-        userProfileRepository.save(userProfile);
+        BeanUtils.copyProperties(userProfileDTO, userProfile.get(), BeanHelper.getNullPropertyNames(userProfileDTO));
 
-        return modelMapper.map(userProfile, UserProfileDTO.class);
+        userProfileRepository.save(userProfile.get());
+
+        log.info("User profile with id {} updated", userProfile.get().getId());
+        return modelMapper.map(userProfile.get(), UserProfileDTO.class);
     }
 }
