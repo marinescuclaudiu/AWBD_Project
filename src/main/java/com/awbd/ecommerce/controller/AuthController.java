@@ -7,12 +7,11 @@ import com.awbd.ecommerce.dto.security.SignUpResponse;
 import com.awbd.ecommerce.service.security.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
-@RestController
+@Controller
 @RequestMapping("/auth")
 public class AuthController {
     private AuthService authService;
@@ -22,12 +21,26 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<SignUpResponse> signUp(@Valid @RequestBody SignUpRequest signUpRequest){
+    public ResponseEntity<SignUpResponse> signUp(@Valid @ModelAttribute SignUpRequest signUpRequest) {
         return ResponseEntity.ok(authService.signUp(signUpRequest));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> logIn(@Valid @RequestBody LoginRequest loginRequest){
+    public ResponseEntity<LoginResponse> logIn(@Valid @ModelAttribute LoginRequest loginRequest){
         return ResponseEntity.ok(authService.login(loginRequest));
+    }
+
+//    -----------------
+
+    @GetMapping("/signup")
+    public String signUpForm(Model model) {
+        model.addAttribute("signUpRequest", new SignUpRequest());
+        return "register";
+    }
+
+    @GetMapping("/login")
+    public String logIn(Model model) {
+        model.addAttribute("loginRequest", new LoginRequest());
+        return "login";
     }
 }

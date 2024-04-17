@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Product Details</title>
+
+    <script src="/webjars/jquery/3.6.0/jquery.min.js"></script>
+    <script src="/webjars/bootstrap/5.3.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.2/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/webjars/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body>
+
+<!--Navigation-->
+<nav class="navbar navbar-expand-lg navbar-light mb-3" style="background-color: #e3f2fd;">
+    <div class="container">
+        <a class="navbar-brand" href="#" th:href="@{'/'}">
+            <i class="fa-regular fa-lightbulb"></i>
+            Furniture Shop
+        </a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#" th:href="@{'/'}">
+                        <i class="fas fa-home mx-1"></i> Home
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#" th:href="@{'/products'}">
+                        <i class="fa-solid fa-couch"></i>
+                        Products
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#" th:href="@{'/categories'}">
+                        <i class="fa-solid fa-list"></i> Categories
+                    </a>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav ms-auto">
+                <li>
+                    <a class="nav-link btn-primary" th:href="@{'/login'}">
+                        <i class="fas fa-sign-in-alt"></i> Sign In
+                    </a>
+                </li>
+
+                <li>
+                    <a class="nav-link btn-primary" th:href="@{'/clients/form'}">
+                        <i class="fas fa-user-plus"></i> Register
+                    </a>
+                </li>
+
+                <li>
+                    <a class="nav-link" th:href="@{'/'}">
+                        <i class="fa-solid fa-cart-shopping"></i> Cart
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!--Navigation-->
+
+<section class="container mb-lg-5">
+
+    <h2 th:text="'Details about the product with the id #' + ${product.id}">
+        Details about the product with the id #1
+    </h2>
+
+    <hr />
+
+    <div class="card">
+        <div class="container-fluid">
+            <div class="wrapper row">
+                <div class="preview col-md-6 d-flex justify-content-center">
+                    <figure class="figure">
+                        <img th:src="@{'/products/getimage/' + ${product.id}}" alt="product" height="252px" />
+                        <figcaption class="figure-caption">Check out more of our products!</figcaption>
+                    </figure>
+                </div>
+
+                <div class="details col-md-6">
+                    <h3 th:text="${product.name}">Sofa</h3>
+                    <div class="rating">
+                        <p th:text="${averageRating} + ' ⭐'">3.5 ⭐</p>
+                        <p class="review-no" th:text="${numberOfReviews} + ' reviews'">41 reviews</p>
+                    </div>
+
+                    <p th:text="${product.description}">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                        Ut a euismod purus. Ut in felis varius, vehicula purus commodo, porta turpis.
+                        Nam sed hendrerit leo.
+                    </p>
+
+                    <p th:text="'Color: ' + ${product.color}">
+                        Green
+                    </p>
+
+                    <p class="font-weight-bold" th:text="'Current price: ' + ${product.price} + ' €'">
+                        180 €
+                    </p>
+
+                    <a href="#" th:href="@{'/orders/1'}"
+                       class="btn btn-outline-primary btn-sm mb-3">
+                        Add to Card
+                    </a>
+
+                    <a href="#" th:href="@{'/products/edit/' + ${product.id}}"
+                       class="btn btn-info btn-sm mb-3">
+                        Update
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="container">
+    <h3>Reviews of the product</h3>
+
+    <hr />
+
+    <!--    View all the reviews of this product-->
+    <table class="table table-hover">
+        <thead class="thead-inverse">
+            <tr>
+                <th>ID</th>
+                <th>Rating</th>
+                <th>Content</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+
+        <tr th:each="review, stat : ${product.getReviews()}"
+            th:class="${stat.odd}? 'table-light':''">
+            <td th:text="${review.id}">1</td>
+            <td th:text="${review.rating}">Product 1</td>
+            <td th:text="${review.content}">Content</td>
+            <td th:text="${review.date}">11.02.2024</td>
+        </tr>
+    </table>
+
+    <!--  Button to add a new review-->
+    <a th:href="@{/reviews/form}"
+       class="btn btn-primary btn-sm mb-3">
+        Add Review
+    </a>
+    <!--  Button to add a new review-->
+
+</section>
+
+</body>
+</html>

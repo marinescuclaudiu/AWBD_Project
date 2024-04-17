@@ -2,14 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Product List</title>
+    <title>Category Details</title>
 
     <script src="/webjars/jquery/3.6.0/jquery.min.js"></script>
     <script src="/webjars/bootstrap/5.3.2/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="/webjars/bootstrap/5.3.2/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/webjars/font-awesome/6.4.0/css/all.min.css"/>
 </head>
-
 <body>
 
 <!--Navigation-->
@@ -73,21 +72,14 @@
 <!--Navigation-->
 
 <div class="container">
-    <h2>List of available products</h2>
+
+    <h2 th:text="${category.name}" class="text-capitalize">Category Name</h2>
 
     <hr/>
 
-    <!--  Button to add a new product-->
-    <a th:href="@{/products/form}"
-       class="btn btn-primary btn-sm mb-3">
-        Add Product
-    </a>
-    <!--  Button to add a new product-->
-
-
-    <!-- List of products -->
+    <!--    View all the products of this category -->
     <table class="table table-bordered table-striped">
-        <thead class="table-dark">
+        <thead class="table-light">
         <tr>
             <th>ID</th>
             <th>Name</th>
@@ -134,5 +126,4 @@
 </div>
 
 </body>
-
 </html>
