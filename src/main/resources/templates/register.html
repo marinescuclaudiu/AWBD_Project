@@ -57,18 +57,24 @@
                     </div>
 
                     <div>
-                        <label for="role">Role:</label>
-                        <select th:field="*{role}" id="role" required>
-                            <option selected value="ADMIN">Admin</option>
-                            <option value="USER">User</option>
-                        </select>
+                        <span>Role:</span>
+
+                        <input type="radio" id="ADMIN" name="role" value="ADMIN">
+                        <label for="ADMIN">ADMIN</label>
+
+                        <input type="radio" id="USER" name="role" value="USER">
+                        <label for="USER">USER</label>
                     </div>
 
-                    <br/>
+                    <br />
 
                     <div class="form-group">
                         <button class="btn btn-primary" type="submit">Register</button>
-                        <span>Already registered? <a th:href="@{/auth/login}">Login here</a></span>
+
+                        <br />
+
+                        <span>Already registered?
+                            <a th:href="@{/auth/login}">Login here</a></span>
                     </div>
                 </form>
             </div>

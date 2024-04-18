@@ -4,6 +4,7 @@ import com.awbd.ecommerce.dto.security.LoginRequest;
 import com.awbd.ecommerce.dto.security.LoginResponse;
 import com.awbd.ecommerce.dto.security.SignUpRequest;
 import com.awbd.ecommerce.dto.security.SignUpResponse;
+import com.awbd.ecommerce.service.UserService;
 import com.awbd.ecommerce.service.security.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private AuthService authService;
 
-    public AuthController(AuthService authService){
+    public AuthController(AuthService authService, UserService userService){
         this.authService = authService;
     }
 
