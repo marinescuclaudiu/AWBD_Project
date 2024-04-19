@@ -12,7 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -63,7 +65,7 @@ public class ProductServiceImpl implements ProductService {
         return modelMapper.map(product.get(), ProductDTO.class);
     }
 
-    @Transactional
+//    @Transactional
     @Override
     public void deleteById(Long id) {
         log.info("Deleting product by ID: {}", id);
@@ -111,5 +113,40 @@ public class ProductServiceImpl implements ProductService {
         return reviewsOfProduct.stream()
                 .map(review -> modelMapper.map(review, ReviewDTO.class))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public double getAverageRatingByProductId(Long id) {
+        productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found!"));
+
+        // check if the product has reviews
+        Product product = productRepository.findById(id).get();
+
+        if(product.getReviews().isEmpty()) {
+            return 0;
+        }
+
+        return (double) Math.round(productRepository.getAverageRatingByProductId(id) * 100) / 100;
+    }
+
+    @Override
+    public void savePhotoFile(ProductDTO productDTO, MultipartFile file) {
+        Product product = modelMapper.map(productDTO, Product.class);
+        try {
+
+
+            byte[] byteObjects = new byte[file.getBytes().length];
+            int i = 0; for (byte b : file.getBytes()){
+                byteObjects[i++] = b; }
+
+            if (byteObjects.length > 0){
+                product.setPhoto(byteObjects);
+            }
+
+            productRepository.save(product);
+        }
+        catch (IOException e) {
+        }
     }
 }

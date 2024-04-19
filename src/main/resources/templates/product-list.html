@@ -35,14 +35,14 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="#" th:href="@{'/products'}">
+                    <a class="nav-link" href="#" th:href="@{'/public/products'}">
                         <i class="fa-solid fa-couch"></i>
                         Products
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="#" th:href="@{'/categories'}">
+                    <a class="nav-link" href="#" th:href="@{'/public/categories'}">
                         <i class="fa-solid fa-list"></i> Categories
                     </a>
                 </li>
@@ -50,13 +50,13 @@
 
             <ul class="navbar-nav ms-auto">
                 <li>
-                    <a class="nav-link btn-primary" th:href="@{'/login'}">
+                    <a class="nav-link btn-primary" th:href="@{'/auth/login'}">
                         <i class="fas fa-sign-in-alt"></i> Sign In
                     </a>
                 </li>
 
                 <li>
-                    <a class="nav-link btn-primary" th:href="@{'/clients/form'}">
+                    <a class="nav-link btn-primary" th:href="@{'/auth/signup'}">
                         <i class="fas fa-user-plus"></i> Register
                     </a>
                 </li>
@@ -78,7 +78,7 @@
     <hr/>
 
     <!--  Button to add a new product-->
-    <a th:href="@{/products/form}"
+    <a th:href="@{/admin/product}"
        class="btn btn-primary btn-sm mb-3">
         Add Product
     </a>
@@ -101,7 +101,7 @@
             th:class="${stat.odd}? 'table-light':''">
             <td th:text="${product.id}">1</td>
             <td>
-                <a th:href="@{'/products/' + ${product.id}}" th:text="${product.name}"
+                <a th:href="@{'/public/product/' + ${product.id}}" th:text="${product.name}"
                    style="color: inherit; text-decoration: inherit">
                     Name of the product
                 </a>
@@ -110,18 +110,18 @@
             <td th:text="${product.color}">Black</td>
 
             <td>
-                <a href="#" th:href="@{'/products/edit/' + ${product.id}}"
+                <a href="#" th:href="@{'/admin/product/edit/' + ${product.id}}"
                    class="btn btn-info btn-sm mb-3">
                     Update
                 </a>
 
-                <a href="#" th:href="@{'/products/delete/' + ${product.id}}"
+                <a href="#" th:href="@{'/admin/product/delete/' + ${product.id}}"
                    class="btn btn-danger btn-sm mb-3"
                    onclick="if (!(confirm('Are you sure you want to delete this product?'))) return false">
                     Delete
                 </a>
 
-                <a href="#" th:href="@{'/orders/1'}"
+                <a href="#" th:href="@{'/'}"
                    class="btn btn-outline-primary btn-sm mb-3">
                     Add to Card
                 </a>
