@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/user-profiles")
 public class UserProfileController {
     private UserProfileService userProfileService;
 
@@ -16,28 +17,28 @@ public class UserProfileController {
         this.userProfileService = userProfileService;
     }
 
-    @PostMapping("admin_user/user_profile")
+    @PostMapping
     public ResponseEntity<UserProfileDTO> save(@Valid @RequestBody UserProfileDTO userProfileDTO) {
         return ResponseEntity.ok().body(userProfileService.save(userProfileDTO));
     }
 
-    @GetMapping("admin/user_profile/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<UserProfileDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok().body(userProfileService.findById(id));
     }
 
-    @GetMapping("admin/user_profiles")
+    @GetMapping
     public ResponseEntity<List<UserProfileDTO>> getAll() {
         List<UserProfileDTO> userProfileDTOS = userProfileService.findAll();
         return ResponseEntity.ok().body(userProfileDTOS);
     }
 
-    @PatchMapping("admin_user/user_profile/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<UserProfileDTO> update(@PathVariable Long id, @Valid @RequestBody UserProfileDTO userProfileDTO){
         return ResponseEntity.ok().body(userProfileService.update(id, userProfileDTO));
     }
 
-    @DeleteMapping("admin_user/user_profile/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         userProfileService.deleteById(id);
         return ResponseEntity.noContent().build();

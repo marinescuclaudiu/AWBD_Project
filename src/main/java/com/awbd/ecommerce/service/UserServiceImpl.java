@@ -9,9 +9,6 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class UserServiceImpl implements UserDetailsService, UserService{
+public class UserServiceImpl implements UserService{
     UserRepository userRepository;
     ModelMapper modelMapper;
 
@@ -95,16 +92,5 @@ public class UserServiceImpl implements UserDetailsService, UserService{
 
         log.info("User with id {} updated", user.get().getId());
         return modelMapper.map(user.get(), UserDTO.class);
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-       Optional<User> user = userRepository.findUserByEmail(username);
-
-       if(user.isEmpty()){
-           throw new UsernameNotFoundException("User with email + " + username + " not found!");
-       }
-
-       return user.get();
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/products")
 public class ProductController {
     private ProductService productService;
 
@@ -17,33 +18,33 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @PostMapping("admin/product")
+    @PostMapping
     public ResponseEntity<ProductDTO> save(@Valid @RequestBody ProductDTO productDTO) {
         return ResponseEntity.ok().body(productService.save(productDTO));
     }
 
-    @GetMapping("public/product/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok().body(productService.findById(id));
     }
 
-    @GetMapping("public/products")
+    @GetMapping
     public ResponseEntity<List<ProductDTO>> getAll() {
         List<ProductDTO> products = productService.findAll();
         return ResponseEntity.ok().body(products);
     }
 
-    @GetMapping("public/product/{id}/reviews")
+    @GetMapping("/{id}/reviews")
     public ResponseEntity<List<ReviewDTO>> findReviewsByProductId(@PathVariable Long id) {
         return ResponseEntity.ok().body(productService.getReviewsOfProductByProductId(id));
     }
 
-    @PatchMapping("admin/product/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<ProductDTO> update(@PathVariable Long id, @Valid @RequestBody ProductDTO productDTO){
         return ResponseEntity.ok().body(productService.update(id, productDTO));
     }
 
-    @DeleteMapping("admin/product/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         productService.deleteById(id);
         return ResponseEntity.noContent().build();

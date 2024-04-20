@@ -1,10 +1,8 @@
 package com.awbd.ecommerce.service;
 
-import com.awbd.ecommerce.dto.CategoryDTO;
 import com.awbd.ecommerce.dto.UserProfileDTO;
 import com.awbd.ecommerce.exception.ResourceNotFoundException;
 import com.awbd.ecommerce.helper.BeanHelper;
-import com.awbd.ecommerce.model.Category;
 import com.awbd.ecommerce.model.User;
 import com.awbd.ecommerce.model.UserProfile;
 import com.awbd.ecommerce.repository.UserProfileRepository;

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/orders")
 public class OrderController {
    private OrderService orderService;
 
@@ -17,28 +18,28 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @PostMapping("admin_user/order")
+    @PostMapping
     public ResponseEntity<OrderDTO> save(@Valid @RequestBody OrderDTO order) {
         return ResponseEntity.ok().body(orderService.save(order));
     }
 
-    @GetMapping("admin_user/order/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<OrderDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok().body(orderService.findById(id));
     }
 
-    @GetMapping("admin/orders")
+    @GetMapping
     public ResponseEntity<List<OrderDTO>> getAll() {
         List<OrderDTO> orders = orderService.findAll();
         return ResponseEntity.ok().body(orders);
     }
 
-    @PatchMapping("admin/order/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<OrderDTO> update(@PathVariable Long id, @Valid @RequestBody OrderDTO orderDTO){
         return ResponseEntity.ok().body(orderService.update(id, orderDTO));
     }
 
-    @DeleteMapping("admin/order/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
         orderService.deleteById(id);
         return ResponseEntity.noContent().build();

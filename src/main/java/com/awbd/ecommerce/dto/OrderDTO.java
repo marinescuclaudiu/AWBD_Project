@@ -3,9 +3,9 @@ package com.awbd.ecommerce.dto;
 import com.awbd.ecommerce.model.PaymentMethod;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -32,7 +32,7 @@ public class OrderDTO {
     private LocalDate orderDate;
 
     @NotNull(message = "Order products are required")
-    @Min(value = 1, message = "At least one order product is required")
+    @Size(min = 1, message = "At least one order product is required")
     private List<OrderProductDTO> orderProductDTOS;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)

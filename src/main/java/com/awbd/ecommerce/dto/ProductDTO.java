@@ -27,8 +27,7 @@ public class ProductDTO {
 
     @NotBlank(message = "Color is required")
     private String color;
-
-    // Assuming photo can be null
+    
     private byte[] photo;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)

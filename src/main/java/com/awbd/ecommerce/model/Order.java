@@ -2,6 +2,7 @@ package com.awbd.ecommerce.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -19,6 +20,7 @@ public class Order {
     private LocalDate orderDate;
 
     @Enumerated(value = EnumType.STRING)
+    @NotNull(message = "Payment method is required")
     private PaymentMethod paymentMethod;
 
     @ManyToOne

@@ -1,6 +1,8 @@
 package com.awbd.ecommerce.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.util.Set;
@@ -12,6 +14,8 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Street is required")
+    @Size(min = 3, max = 30, message = "Name must be between 3 and 30 characters")
     private String name;
 
     @ManyToMany(mappedBy = "categories")
