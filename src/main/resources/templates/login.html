@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+
+    <script src="/webjars/jquery/3.6.0/jquery.min.js"></script>
+    <script src="/webjars/bootstrap/5.3.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.2/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/webjars/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body>
+
+<div class="container d-flex justify-content-center mt-lg-5">
+    <div class="row col-5">
+
+        <div th:if="${param.error}">
+            <div class="alert alert-danger">Invalid Email or Password</div>
+        </div>
+        <div th:if="${param.logout}">
+            <div class="alert alert-success"> You have been logged out.</div>
+        </div>
+
+        <div class="card" style="padding: 0">
+            <div class="card-header">
+                <h2 class="text-center">Sign In</h2>
+            </div>
+            <div class="card-body">
+                <form
+                        method="post"
+                        role="form"
+                        th:action="@{/auth/login}"
+                        class="form-horizontal"
+                >
+                    <div class="form-group mb-3">
+                        <label class="control-label" for="email"> Email</label>
+                        <input
+                                type="text"
+                                id="email"
+                                name="email"
+                                class="form-control"
+                                placeholder="Enter email"
+                        />
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label class="control-label" for="password"> Password</label>
+                        <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                class="form-control"
+                                placeholder="Enter password"
+                        />
+                    </div>
+
+                    <br/>
+
+                    <div class="form-group mb-3">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+
+                        <br />
+
+                        <span> Don't have an account yet?
+                                <a th:href="@{/auth/signup}">Register here</a>
+                            </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

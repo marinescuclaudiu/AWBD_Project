@@ -1,6 +1,5 @@
 package com.awbd.ecommerce.repository;
 
-import com.awbd.ecommerce.dto.ReviewDTO;
 import com.awbd.ecommerce.model.Product;
 import com.awbd.ecommerce.model.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,4 +12,8 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT r FROM Review r INNER JOIN r.product p WHERE p.id = :id")
     List<Review> getReviewsOfProductByProductId(Long id);
+
+    @Query("SELECT AVG(r.rating) FROM Review r WHERE r.product.id = :id")
+    double getAverageRatingByProductId(Long id);
+
 }
