@@ -20,7 +20,6 @@ public class UserProfile {
     @NotBlank(message = "Last name is required")
     private String lastName;
 
-    @Size(min = 10, max = 10, message = "Phone number must be 10 digits long")
     private String phoneNumber;
 
     @OneToOne
