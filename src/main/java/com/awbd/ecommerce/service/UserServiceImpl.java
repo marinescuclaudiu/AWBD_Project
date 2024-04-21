@@ -124,7 +124,7 @@ public class UserServiceImpl implements UserService{
         UserProfile userProfile = new UserProfile();
         userProfile.setFirstName("No first name");
         userProfile.setLastName("No last name");
-        userProfile.setPhoneNumber("No phone number");
+        userProfile.setPhoneNumber("0123456789");
 
         User newUser = User.builder()
                 .username(username)
