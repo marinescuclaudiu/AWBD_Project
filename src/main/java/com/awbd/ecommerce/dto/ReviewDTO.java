@@ -8,7 +8,8 @@ import lombok.*;
 
 import java.time.LocalDate;
 
-@Data
+@Setter
+@Getter
 @AllArgsConstructor
 public class ReviewDTO {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
@@ -24,8 +25,7 @@ public class ReviewDTO {
 
     @NotNull(message = "Rating is required")
     @Positive(message = "Rating must be positive")
-    @Size(min = 1, max = 5, message = "Rating must be between 1 and 5")
-    private int rating;
+    private double rating;
 
     private String content;
 

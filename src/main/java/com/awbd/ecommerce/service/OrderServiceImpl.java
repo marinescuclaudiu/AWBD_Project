@@ -1,5 +1,6 @@
 package com.awbd.ecommerce.service;
 
+import com.awbd.ecommerce.dto.AddressDTO;
 import com.awbd.ecommerce.dto.OrderDTO;
 import com.awbd.ecommerce.dto.OrderProductDTO;
 import com.awbd.ecommerce.exception.ResourceNotFoundException;
@@ -161,5 +162,10 @@ public class OrderServiceImpl implements OrderService{
 
         log.info("Order updated: {}", order.get().getId());
         return modelMapper.map(order.get(), OrderDTO.class);
+    }
+
+    @Override
+    public AddressDTO findAddressByOrderId(Long orderId) {
+        return orderRepository.findAddressByOrderId(orderId);
     }
 }

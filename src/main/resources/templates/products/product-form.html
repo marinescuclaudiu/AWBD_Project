@@ -8,6 +8,7 @@
     <script src="/webjars/bootstrap/5.3.2/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="/webjars/bootstrap/5.3.2/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/webjars/font-awesome/6.4.0/css/all.min.css"/>
+    <link rel="stylesheet" href="../../static/css/style.css">
 </head>
 <body>
 
@@ -84,31 +85,38 @@
             <div class="col-6">
 
                 <div>
-                    <label for="name">Name</label>
+                    <label th:if="${#fields.hasErrors('name')}"
+                           th:errors="*{name}"
+                           style="color: red"
+                           for="name">Error</label>
                     <input
                             type="text"
                             id="name"
                             th:field="*{name}"
-                            required
                             placeholder="Ergonomic chair"
                             class="form-control mb-4"
                     />
                 </div>
 
                 <div>
-                    <label for="description">Description</label>
+                    <label th:if="${#fields.hasErrors('description')}"
+                           th:errors="*{description}"
+                           style="color: red"
+                           for="description">Error</label>
                     <textarea
                             id="description"
                             placeholder="This is a description"
                             rows="2"
                             th:field="*{description}"
                             class="form-control mb-4 no-gutters"
-                    >
-                    </textarea>
+                    ></textarea>
                 </div>
 
                 <div>
-                    <label for="price">Price in euros</label>
+                    <label th:if="${#fields.hasErrors('price')}"
+                           th:errors="*{price}"
+                           style="color: red"
+                           for="price">Error</label>
                     <input
                             type="number"
                             id="price"
@@ -116,18 +124,19 @@
                             th:field="*{price}"
                             placeholder="100"
                             class="form-control mb-4"
-                            required
                     />
                 </div>
 
                 <div class="form-group">
-                    <label for="color">Color</label>
+                    <label th:if="${#fields.hasErrors('color')}"
+                           th:errors="*{color}"
+                           style="color: red"
+                           for="color">Error</label>
                     <input
                             type="text"
                             id="color"
                             th:field="*{color}"
                             placeholder="black"
-                            required
                             class="form-control mb-4"
                     />
                 </div>

@@ -2,10 +2,7 @@ package com.awbd.ecommerce.model;
 
 import com.awbd.ecommerce.model.security.User;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -19,7 +16,6 @@ public class Review {
 
     @NotNull(message = "Rating is required")
     @Positive(message = "Rating must be positive")
-    @Size(min = 1, max = 5, message = "Rating must be between 1 and 5")
     private double rating;
 
     private String content;

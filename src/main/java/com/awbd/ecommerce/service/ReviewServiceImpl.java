@@ -27,7 +27,6 @@ public class ReviewServiceImpl implements ReviewService {
         this.modelMapper = modelMapper;
     }
 
-    @Transactional
     @Override
     public ReviewDTO save(ReviewDTO reviewDTO) {
         log.info("Saving review: {}, rating: {}", reviewDTO.getContent(), reviewDTO.getRating());

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Review Form</title>
+    <title>Order Page</title>
 
     <script src="/webjars/jquery/3.6.0/jquery.min.js"></script>
     <script src="/webjars/bootstrap/5.3.2/js/bootstrap.min.js"></script>
@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="/webjars/font-awesome/6.4.0/css/all.min.css"/>
 </head>
 <body>
-<!--Navigation-->
+
 <nav class="navbar navbar-expand-lg navbar-light mb-3" style="background-color: #e3f2fd;">
     <div class="container">
         <a class="navbar-brand" href="#" th:href="@{'/'}">
@@ -54,8 +54,14 @@
                 </li>
 
                 <li>
-                    <a class="nav-link btn-primary" th:href="@{'/register'}">
-                        <i class="fas fa-user-plus"></i> Register
+                    <a class="nav-link btn-primary" th:href="@{'/show-users'}">
+                        <i class="fa-solid fa-users"></i> Users
+                    </a>
+                </li>
+
+                <li>
+                    <a class="nav-link btn-primary" th:href="@{'/users/profile/1'}">
+                        <i class="fa-solid fa-address-card"></i> Profile
                     </a>
                 </li>
 
@@ -68,54 +74,30 @@
         </div>
     </div>
 </nav>
-<!--Navigation-->
 
 
 <div class="container">
+    <h2 th:text="'>Details about the order with id #' + ${order.id}">Details about the order with id #1</h2>
 
-    <h2>Form for adding or updating a review</h2>
+    <hr />
 
-    <hr/>
-
-    <form enctype="multipart/form-data" method="post" th:object="${review}" th:action="@{'/products/' + ${product.getId()} + '/review'}" class="mb-lg-5">
-        <input type="hidden" th:field="*{id}" />
-
-        <div class="row">
-            <div class="col-6">
-
-                <div class="form-group">
-                    <label class="form-label" for="rating">Rating (1-5)</label>
-                    <input
-                            type="range"
-                            id="rating"
-                            name="rating"
-                            min="1" max="5"
-                            class="form-range mb-4"
-                            th:field="*{rating}"
-                    >
-                </div>
-
-                <div class="form-group">
-                    <label for="content">Content</label>
-                    <textarea
-                            id="content"
-                            placeholder="Enter your comment about the product"
-                            rows="2"
-                            th:field="*{content}"
-                            class="form-control mb-4 no-gutters"
-                    >
-                    </textarea>
-                </div>
-
-                <!--Submit button-->
-                <div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
-                <!--Submit button-->
-            </div>
-
+    <div class="card col-6">
+        <div class="card-header">
+            Order Details
         </div>
-    </form>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item" th:text="'ID: ' + ${order.id}">1</li>
+            <li class="list-group-item" th:text="'Total amount: ' + ${order.totalAmount} + '€'">100€</li>
+            <li class="list-group-item" th:text="'Date: ' + ${order.orderDate}">2024-01-01</li>
+            <li class="list-group-item" th:text="'Payment method: ' + ${order.paymentMethod}"> CREDIT CARD</li>
+<!--            <li class="list-group-item"-->
+<!--                th:text="'Address: Str. ' + ${address.street} + ', '  + ${address.city} + ', ' + ${address.district} + ', ' + ${address.zipCode} + ', ' + ${address.country}"-->
+<!--            >-->
+<!--                Str. Unirii, Bucuresti, Sectorul 3, 012345, Romania-->
+<!--            </li>-->
+        </ul>
+    </div>
+
 </div>
 
 </body>

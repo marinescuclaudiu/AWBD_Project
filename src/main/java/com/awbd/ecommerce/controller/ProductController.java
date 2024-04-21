@@ -7,10 +7,13 @@ import com.awbd.ecommerce.model.Product;
 import com.awbd.ecommerce.service.CategoryService;
 import com.awbd.ecommerce.service.ProductService;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.springframework.boot.Banner;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -36,7 +39,7 @@ public class ProductController {
     public String findAll(Model model) {
         List<ProductDTO> products = productService.findAll();
         model.addAttribute("products", products);
-        return "product-list";
+        return "/products/product-list";
     }
 
     @GetMapping("/{id}")
@@ -51,7 +54,7 @@ public class ProductController {
         double averageRating = productService.getAverageRatingByProductId(id);
         model.addAttribute("averageRating", averageRating);
 
-        return "product-details";
+        return "products/product-details";
     }
 
     @RequestMapping("/delete/{id}")
@@ -71,7 +74,7 @@ public class ProductController {
         List<CategoryDTO> allCategories = categoryService.findAll();
         model.addAttribute("allCategories", allCategories);
 
-        return "product-form";
+        return "products/product-form";
     }
 
     @RequestMapping("/edit/{id}")
@@ -83,12 +86,23 @@ public class ProductController {
         List<CategoryDTO> allCategories = categoryService.findAll();
         model.addAttribute("allCategories", allCategories);
 
-        return "product-form";
+        return "products/product-form";
     }
 
     @PostMapping
-    public String saveOrUpdate(@ModelAttribute ProductDTO product,
+    public String saveOrUpdate(@Valid @ModelAttribute("product") ProductDTO product,
+                               BindingResult bindingResult,
+                               Model model,
                                @RequestParam("imagefile") MultipartFile file) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("product", product);
+
+            List<CategoryDTO> allCategories = categoryService.findAll();
+            model.addAttribute("allCategories", allCategories);
+
+            return "products/product-form";
+        }
+
         if (file.isEmpty())
             productService.save(product);
         else

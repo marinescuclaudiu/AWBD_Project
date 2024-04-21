@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.ArrayList;
@@ -36,15 +37,16 @@ public class OrderController {
         this.modelMapper = modelMapper;
     }
 
-//    @PostMapping
-//    public ResponseEntity<OrderDTO> save(@RequestBody OrderDTO order) {
-//        return ResponseEntity.ok().body(orderService.save(order));
-//    }
-//
-//    @GetMapping("/{id}")
-//    public ResponseEntity<OrderDTO> findById(@PathVariable Long id) {
-//        return ResponseEntity.ok().body(orderService.findById(id));
-//    }
+
+    @GetMapping("/orders/{id}")
+    public String findById(@PathVariable Long id, Model model) {
+        OrderDTO orderDTO = orderService.findById(id);
+        model.addAttribute("order", orderDTO);
+
+        return "/orders/order-page";
+    }
+
+    // TODO: findAll, deleteById, update, button to add or decrease wuantity
 //
 //    @GetMapping
 //    public ResponseEntity<List<OrderDTO>> findAll() {
@@ -143,7 +145,7 @@ public class OrderController {
         }
 
         model.addAttribute("productsInCart", productsInCart);
-        return "cart";
+        return "/orders/cart";
     }
 
 

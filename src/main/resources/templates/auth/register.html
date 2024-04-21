@@ -16,6 +16,9 @@
             <div class="card-header w-100">
                 <h2 class="text-center">Registration</h2>
             </div>
+            <div th:if="${param.error}">
+                <div class="alert alert-danger">Invalid Username or Password</div>
+            </div>
             <div th:if="${param.success}">
                 <div class="alert alert-info">
                     You have successfully registered!
