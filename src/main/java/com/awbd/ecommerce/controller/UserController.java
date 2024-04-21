@@ -60,7 +60,7 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public String saveOrUpdate(@ModelAttribute UserProfileDTO userProfileDTO,
+    public String saveOrUpdate(@Valid @ModelAttribute("profile") UserProfileDTO userProfileDTO,
                                BindingResult bindingResult,
                                Model model) {
         if (bindingResult.hasErrors()) {

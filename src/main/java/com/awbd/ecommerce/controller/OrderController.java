@@ -7,12 +7,14 @@ import com.awbd.ecommerce.service.OrderService;
 import com.awbd.ecommerce.service.ProductService;
 import com.awbd.ecommerce.service.UserService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -150,7 +152,7 @@ public class OrderController {
 
 
     @PostMapping("/placeOrder")
-    public String placeOrder(Address addressForm, String paymentMethod, HttpSession session, Model model) {
+    public String placeOrder(@Valid @ModelAttribute("addressForm") Address addressForm, String paymentMethod, HttpSession session, Model model) {
         Map<Long, Integer> cart = (Map<Long, Integer>) session.getAttribute("cart");
 
         OrderDTO orderDTO = new OrderDTO();
