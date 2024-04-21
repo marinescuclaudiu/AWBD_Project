@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS user_authority;
+DROP TABLE IF EXISTS authority;
 DROP TABLE IF EXISTS order_product;
 DROP TABLE IF EXISTS `order`;
 DROP TABLE IF EXISTS address;
@@ -31,10 +33,27 @@ CREATE TABLE Category (
                           name VARCHAR(255)
 );
 
-CREATE TABLE `user` (
-                        id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                        email VARCHAR(255),
-                        password VARCHAR(255)
+CREATE TABLE User (
+                      id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                      username VARCHAR(50) NOT NULL,
+                      password VARCHAR(100) NOT NULL,
+                      enabled BOOLEAN NOT NULL DEFAULT true,
+                      account_non_expired BOOLEAN NOT NULL DEFAULT true,
+                      account_non_locked BOOLEAN NOT NULL DEFAULT true,
+                      credentials_non_expired BOOLEAN NOT NULL DEFAULT true
+);
+
+CREATE TABLE Authority (
+                           id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                           role VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE User_Authority (
+                                user_id BIGINT,
+                                authority_id BIGINT,
+                                FOREIGN KEY (user_id) REFERENCES USER(id),
+                                FOREIGN KEY (authority_id) REFERENCES AUTHORITY(id),
+                                PRIMARY KEY (user_id, authority_id)
 );
 
 CREATE TABLE user_profile (
@@ -46,7 +65,6 @@ CREATE TABLE user_profile (
                               FOREIGN KEY (user_id) REFERENCES `user`(id)
 
 );
-
 
 CREATE TABLE Review (
                         id BIGINT AUTO_INCREMENT PRIMARY KEY,

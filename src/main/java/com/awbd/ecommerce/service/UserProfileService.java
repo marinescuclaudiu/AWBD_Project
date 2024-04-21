@@ -1,5 +1,6 @@
 package com.awbd.ecommerce.service;
 
+import com.awbd.ecommerce.dto.UserDTO;
 import com.awbd.ecommerce.dto.UserProfileDTO;
 
 import java.util.List;
@@ -10,4 +11,8 @@ public interface UserProfileService {
     UserProfileDTO findById(Long id);
     void deleteById(Long id);
     UserProfileDTO update(Long id, UserProfileDTO userProfileDTO);
+
+    UserProfileDTO findByUserId(Long userId);
+
+    UserDTO findUserByProfileId(Long profileId);
 }

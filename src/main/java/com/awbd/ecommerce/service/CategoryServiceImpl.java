@@ -1,9 +1,11 @@
 package com.awbd.ecommerce.service;
 
 import com.awbd.ecommerce.dto.CategoryDTO;
+import com.awbd.ecommerce.dto.ProductDTO;
 import com.awbd.ecommerce.exception.ResourceNotFoundException;
 import com.awbd.ecommerce.helper.BeanHelper;
 import com.awbd.ecommerce.model.Category;
+import com.awbd.ecommerce.model.Product;
 import com.awbd.ecommerce.repository.CategoryRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
@@ -92,5 +94,14 @@ public class CategoryServiceImpl implements CategoryService {
 
         log.info("Category updated: {}", category.get().getName());
         return modelMapper.map(category.get(), CategoryDTO.class);
+    }
+
+    @Override
+    public List<ProductDTO> findProductsByCategoryId(Long id) {
+        List<Product> products = categoryRepository.findProductsByCategoryId(id);
+
+        return products.stream().map(
+                        product -> modelMapper.map(product, ProductDTO.class))
+                .collect(Collectors.toList());
     }
 }

@@ -1,5 +1,6 @@
 package com.awbd.ecommerce.model;
 
+import com.awbd.ecommerce.model.security.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

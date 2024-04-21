@@ -1,46 +1,66 @@
 package com.awbd.ecommerce.controller;
 
 import com.awbd.ecommerce.dto.CategoryDTO;
+import com.awbd.ecommerce.dto.ProductDTO;
+import com.awbd.ecommerce.model.Category;
 import com.awbd.ecommerce.service.CategoryService;
-import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/categories")
 public class CategoryController {
-    private CategoryService categoryService;
+    CategoryService categoryService;
 
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
 
-    @PostMapping
-    public ResponseEntity<CategoryDTO> save(@Valid @RequestBody CategoryDTO categoryDTO) {
-        return ResponseEntity.ok().body(categoryService.save(categoryDTO));
+    @GetMapping
+    public String findAll(Model model) {
+        List<CategoryDTO> categories = categoryService.findAll();
+        model.addAttribute("categories", categories);
+        return "category-list";
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryDTO> findById(@PathVariable Long id) {
-        return ResponseEntity.ok().body(categoryService.findById(id));
+    public String findById(@PathVariable Long id, Model model) {
+        CategoryDTO categoryDTO = categoryService.findById(id);
+        model.addAttribute("category", categoryDTO);
+
+        // extract all the products corresponding to this category
+        List<ProductDTO> productsDTO = categoryService.findProductsByCategoryId(id);
+        model.addAttribute("products", productsDTO);
+
+        return "category-details";
     }
 
-    @GetMapping
-    public ResponseEntity<List<CategoryDTO>> getAll() {
-        List<CategoryDTO> categories = categoryService.findAll();
-        return ResponseEntity.ok().body(categories);
+    @RequestMapping("/form")
+    public String save(Model model) {
+        model.addAttribute("category", new Category());
+        return "category-form";
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<CategoryDTO> update(@PathVariable Long id, @Valid @RequestBody CategoryDTO categoryDTO){
-        return ResponseEntity.ok().body(categoryService.update(id, categoryDTO));
+    @RequestMapping("/edit/{id}")
+    public String update(@PathVariable Long id, Model model) {
+        CategoryDTO categoryDTO = categoryService.findById(id);
+        model.addAttribute("category", categoryDTO);
+
+        return "category-form";
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+    @PostMapping
+    public String saveOrUpdate(@ModelAttribute CategoryDTO categoryDTO) {
+        categoryService.save(categoryDTO);
+        return "redirect:/categories" ;
+    }
+
+    @RequestMapping("/delete/{id}")
+    public String deleteById(@PathVariable Long id) {
         categoryService.deleteById(id);
-        return ResponseEntity.noContent().build();
+        return "redirect:/categories";
     }
 }

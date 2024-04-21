@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cart</title>
+
+    <script src="/webjars/jquery/3.6.0/jquery.min.js"></script>
+    <script src="/webjars/bootstrap/5.3.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.2/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/webjars/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+<body>
+
+<!--Navigation-->
+<nav class="navbar navbar-expand-lg navbar-light mb-3" style="background-color: #e3f2fd;">
+    <div class="container">
+        <a class="navbar-brand" href="#" th:href="@{'/'}">
+            <i class="fa-regular fa-lightbulb"></i>
+            Furniture Shop
+        </a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#" th:href="@{'/'}">
+                        <i class="fas fa-home mx-1"></i> Home
+                        <span class="sr-only">(current)</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#" th:href="@{'/products'}">
+                        <i class="fa-solid fa-couch"></i>
+                        Products
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#" th:href="@{'/categories'}">
+                        <i class="fa-solid fa-list"></i> Categories
+                    </a>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav ms-auto">
+                <li>
+                    <a class="nav-link btn-primary" th:href="@{'/login'}">
+                        <i class="fas fa-sign-in-alt"></i> Sign In
+                    </a>
+                </li>
+
+                <li>
+                    <a class="nav-link btn-primary" th:href="@{'/register'}">
+                        <i class="fas fa-user-plus"></i> Register
+                    </a>
+                </li>
+
+                <li>
+                    <a class="nav-link" th:href="@{'/'}">
+                        <i class="fa-solid fa-cart-shopping"></i> Cart
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!--Navigation-->
+<div class="container">
+    <h1>Cart</h1>
+
+    <hr/>
+
+    <div th:if="${productsInCart.isEmpty()}">
+        <p>Your cart is empty</p>
+    </div>
+
+    <div th:each="productEntry : ${productsInCart}" class="mb-4">
+        <div class="card">
+            <div class="card-body">
+                <p th:text="'Product name: ' + ${productEntry.key.name}">Product Name</p>
+                <p th:text="'Price: ' + ${productEntry.key.price} + '€'">100€</p>
+                <p th:text="'Quantity: ' + ${productEntry.value}">Quantity</p>
+<!--                <form th:action="@{/cart/increase}" method="post">-->
+<!--                    <input type="hidden" name="productId" th:value="${productEntry.key.id}" />-->
+<!--                    <button type="submit">-->
+<!--                        +-->
+<!--                    </button>-->
+<!--                </form>-->
+<!--                <form th:action="@{/cart/decrease}" method="post">-->
+<!--                    <input type="hidden" name="productId" th:value="${productEntry.key.id}" />-->
+<!--                    <button type="submit">-->
+<!--                        - -->
+<!--                    </button>-->
+<!--                </form>-->
+            </div>
+        </div>
+    </div>
+
+    <!--    <p class="fw-bold" th:text="'Total amount: ' + ${totalAmount}">100€</p>-->
+
+    <h1>Enter Shipping Address</h1>
+    <form th:action="@{/placeOrder}" method="post" class="mb-lg-5">
+
+        <div class="row">
+            <div class="col-4">
+                <div class="form-group">
+                    <label for="street">Street</label>
+                    <input
+                            type="text"
+                            name="street"
+                            id="street"
+                            placeholder="Street"
+                            class="form-control mb-4"
+                            required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input
+                            type="text"
+                            name="city"
+                            id="city"
+                            placeholder="City"
+                            class="form-control mb-4"
+                            required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="zipCode">Zip Code</label>
+                    <input
+                            type="text"
+                            name="zipCode"
+                            id="zipCode"
+                            placeholder="Zip Code"
+                            class="form-control mb-4"
+                            required
+                    >
+                </div>
+            </div>
+
+            <div class="col-4">
+                <div class="form-group">
+                    <label for="country">Country</label>
+                    <input
+                            type="text"
+                            name="country"
+                            id="country"
+                            placeholder="Country"
+                            class="form-control mb-4"
+                            required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="district">District</label>
+                    <input
+                            type="text"
+                            name="district"
+                            id="district"
+                            class="form-control mb-4"
+                            placeholder="District"
+                            required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="payment">Choose the payment method:</label>
+                    <select name="paymentMethod" id="payment" class="form-select" aria-label="Open the menu">>
+                        <option value="CREDIT_CARD">CREDIT CARD</option>
+                        <option value="DEBIT_CARD">DEBIT CARD</option>
+                        <option value="PAYPAL">PAYPAL</option>
+                        <option value="BANK_TRANSFER">BANK TRANSFER</option>
+                        <option value="CASH_ON_DELIVERY">CASH ON DELIVERY</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Place Order</button>
+    </form>
+</div>
+
+</body>
+</html>

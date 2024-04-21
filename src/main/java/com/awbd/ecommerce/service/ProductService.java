@@ -17,5 +17,4 @@ public interface ProductService {
     double getAverageRatingByProductId(Long id);
 
     void savePhotoFile(ProductDTO product, MultipartFile file);
-
 }

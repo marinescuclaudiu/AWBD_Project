@@ -1,5 +1,6 @@
 package com.awbd.ecommerce.model;
 
+import com.awbd.ecommerce.model.security.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

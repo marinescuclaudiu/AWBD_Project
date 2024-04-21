@@ -1,12 +1,13 @@
 package com.awbd.ecommerce.service;
 
+import com.awbd.ecommerce.dto.UserDTO;
 import com.awbd.ecommerce.dto.UserProfileDTO;
 import com.awbd.ecommerce.exception.ResourceNotFoundException;
 import com.awbd.ecommerce.helper.BeanHelper;
-import com.awbd.ecommerce.model.User;
+import com.awbd.ecommerce.model.security.User;
 import com.awbd.ecommerce.model.UserProfile;
 import com.awbd.ecommerce.repository.UserProfileRepository;
-import com.awbd.ecommerce.repository.UserRepository;
+import com.awbd.ecommerce.repository.security.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -104,5 +105,38 @@ public class UserProfileServiceImpl implements UserProfileService{
 
         log.info("User profile with id {} updated", userProfile.get().getId());
         return modelMapper.map(userProfile.get(), UserProfileDTO.class);
+    }
+
+    @Override
+    public UserProfileDTO findByUserId(Long userId) {
+        Optional<User> userOptional = userRepository.findById(userId);
+
+        if(userOptional.isEmpty()) {
+            throw new ResourceNotFoundException("User with id " + userId + " not found!");
+        }
+
+        UserProfile userProfile = userOptional.get().getUserProfile();
+
+        if (userProfile == null) {
+            userProfile = new UserProfile();
+            userProfile.setUser(userOptional.get());
+            userProfile.setFirstName("No first name");
+            userProfile.setLastName("No last name");
+            userProfile.setPhoneNumber("No phone number");
+        }
+
+        return modelMapper.map(userProfile, UserProfileDTO.class);
+    }
+
+    @Override
+    public UserDTO findUserByProfileId(Long profileId) {
+        Optional<UserProfile> userProfile = userProfileRepository.findById(profileId);
+
+        if(userProfile.isEmpty()) {
+            throw new ResourceNotFoundException("Profile with id " + profileId + " not found!");
+        }
+
+        User user = userProfile.get().getUser();
+        return modelMapper.map(user, UserDTO.class);
     }
 }

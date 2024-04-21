@@ -1,5 +1,8 @@
-package com.awbd.ecommerce.model;
+package com.awbd.ecommerce.model.security;
 
+import com.awbd.ecommerce.model.Order;
+import com.awbd.ecommerce.model.Review;
+import com.awbd.ecommerce.model.UserProfile;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -22,9 +25,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Email should be valid")
-    private String email;
+    @NotBlank(message = "Username is required")
+    private String username;
 
     @NotBlank(message = "Password is required")
     private String password;
@@ -40,8 +42,27 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = false)
     private List<Order> orders;
 
-    public User(String email, String password){
-        this.email = email;
+    @Singular
+    @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @JoinTable(name = "user_authority",
+            joinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "ID")},
+            inverseJoinColumns = {@JoinColumn(name = "AUTHORITY_ID", referencedColumnName = "ID")})
+    private Set<Authority> authorities;
+
+    @Builder.Default
+    private Boolean accountNonExpired = true;
+
+    @Builder.Default
+    private Boolean accountNonLocked = true;
+
+    @Builder.Default
+    private Boolean credentialsNonExpired = true;
+
+    @Builder.Default
+    private Boolean enabled = true;
+
+    public User(String username, String password){
+        this.username = username;
         this.password = password;
     }
 }
