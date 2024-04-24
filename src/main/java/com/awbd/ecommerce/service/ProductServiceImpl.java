@@ -11,6 +11,9 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -148,5 +151,15 @@ public class ProductServiceImpl implements ProductService {
         }
         catch (IOException e) {
         }
+    }
+
+    @Override
+    public Page<ProductDTO> findPaginated(Pageable pageable) {
+        Page<Product> productPage = productRepository.findAll(pageable);
+        List<ProductDTO> dtoList = productPage.getContent()
+                .stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .collect(Collectors.toList());
+        return new PageImpl<>(dtoList, pageable, productPage.getTotalElements());
     }
 }

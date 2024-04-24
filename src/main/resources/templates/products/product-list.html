@@ -97,7 +97,7 @@
         </tr>
         </thead>
 
-        <tr th:each="product, stat : ${products}"
+        <tr th:each="product, stat : ${productPage}"
             th:class="${stat.odd}? 'table-light':''">
             <td th:text="${product.id}">1</td>
             <td>
@@ -131,6 +131,40 @@
 
     </table>
     <!-- List of products -->
+
+
+    <!-- List of pages -->
+    <aside th:if="${productPage.totalPages > 0}" aria-label="Page navigation example">
+        <ul  class="pagination">
+
+            <li class="page-item">
+                <a th:if="${productPage.number > 0}"
+                   th:href="@{/products(size=${productPage.size}, page=${productPage.number})}"
+                   class="page-link" >
+                    Previous
+                </a></li>
+            <li th:each="pageNumber : ${#numbers.sequence(1,T(java.lang.Math).min(7,productPage.totalPages))}"
+                th:class="${pageNumber==productPage.number + 1} ? 'page-item active':   'page-item'">
+                <a class="page-link"
+                   th:text="${pageNumber}"
+                   th:href="@{/products(size=${productPage.size}, page=${pageNumber})}">
+                    1
+                </a></li>
+            <li
+                    th:class="${productPage.number>6} ? 'page-item active':  'page-item'"
+                    th:if="${productPage.totalPages > 6}"><a class="page-link" href="#">...</a></li>
+
+            <li th:if="${productPage.number < productPage.totalPages}" class="page-item">
+                <a th:if="${productPage.number < productPage.totalPages}"
+                   th:href="@{/products(size=${productPage.size}, page=${productPage.number+2})}"
+                   class="page-link" >
+                    Next
+                </a>
+            </li>
+        </ul>
+
+    </aside>
+    <!-- List of pages -->
 </div>
 
 </body>

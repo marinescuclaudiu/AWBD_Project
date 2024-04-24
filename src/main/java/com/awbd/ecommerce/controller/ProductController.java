@@ -9,7 +9,8 @@ import com.awbd.ecommerce.service.ProductService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.springframework.boot.Banner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,7 +22,9 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/products")
@@ -35,10 +38,24 @@ public class ProductController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping
-    public String findAll(Model model) {
-        List<ProductDTO> products = productService.findAll();
-        model.addAttribute("products", products);
+//    @GetMapping
+//    public String findAll(Model model) {
+//        List<ProductDTO> products = productService.findAll();
+//        model.addAttribute("products", products);
+//        return "/products/product-list";
+//    }
+
+    @RequestMapping // /movies?page=1&size=10
+    public String getMoviePage(Model model,
+                               @RequestParam("page") Optional<Integer> page,
+                               @RequestParam("size") Optional<Integer> size) {
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(10);
+
+        Page<ProductDTO> moviePage = productService.findPaginated(PageRequest.of(currentPage - 1, pageSize));
+
+        model.addAttribute("productPage",moviePage);
+
         return "/products/product-list";
     }
 
