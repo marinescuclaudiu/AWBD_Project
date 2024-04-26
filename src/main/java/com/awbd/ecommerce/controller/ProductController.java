@@ -11,6 +11,8 @@ import jakarta.validation.Valid;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,26 +40,36 @@ public class ProductController {
         this.categoryService = categoryService;
     }
 
-//    @GetMapping
-//    public String findAll(Model model) {
-//        List<ProductDTO> products = productService.findAll();
-//        model.addAttribute("products", products);
-//        return "/products/product-list";
-//    }
-
     @RequestMapping // /movies?page=1&size=10
-    public String getMoviePage(Model model,
-                               @RequestParam("page") Optional<Integer> page,
-                               @RequestParam("size") Optional<Integer> size) {
+    public String getProductPage(Model model,
+                                 @RequestParam("page") Optional<Integer> page,
+                                 @RequestParam("size") Optional<Integer> size,
+                                 @RequestParam(required = false, value = "category") String category) {
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(10);
 
-        Page<ProductDTO> moviePage = productService.findPaginated(PageRequest.of(currentPage - 1, pageSize));
+        System.out.println("-----------------");
+        System.out.println("category: " + category);
 
-        model.addAttribute("productPage",moviePage);
+        Page<ProductDTO> productPage = productService.findPaginated(
+                PageRequest.of(currentPage - 1, pageSize), category
+        );
+
+        model.addAttribute("productPage", productPage);
+        model.addAttribute("category", category);
 
         return "/products/product-list";
     }
+
+
+//    @RequestMapping
+//    public String getPagedAndSortedProducts(Pageable pageable, Model model) {
+//        Page<ProductDTO> productDTOPage = productService.getPagedAndSortedProducts(pageable);
+//
+//        model.addAttribute("productPage", productDTOPage);
+//
+//        return "/products/product-list";
+//    }
 
     @GetMapping("/{id}")
     public String findById(@PathVariable Long id, Model model) {
