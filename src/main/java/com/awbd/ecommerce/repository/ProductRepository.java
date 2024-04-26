@@ -16,4 +16,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT AVG(r.rating) FROM Review r WHERE r.product.id = :id")
     double getAverageRatingByProductId(Long id);
 
+    @Query("SELECT p from Product p JOIN p.categories c WHERE c.name = :categoryName ORDER BY p.price")
+    List<Product> findByCategoryAndSortByPrice(String categoryName);
+
+    @Query("SELECT p from Product p ORDER BY p.price")
+    List<Product> sortByPrice();
 }

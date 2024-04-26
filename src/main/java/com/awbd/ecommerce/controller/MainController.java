@@ -17,14 +17,14 @@ public class MainController {
 
     @RequestMapping({"","/","/home"})
     public ModelAndView getHome(){
-        return new ModelAndView("main");
+        return new ModelAndView("/auth/main");
     }
 
     @GetMapping("/login")
     public String showLogInForm() {
-        return "login";
+        return "/auth/login";
     }
 
     @GetMapping("/access_denied")
-    public String accessDeniedPage(){ return "access-denied"; }
+    public String accessDeniedPage(){ return "/exceptions/access-denied"; }
 }

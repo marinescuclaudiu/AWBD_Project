@@ -1,6 +1,7 @@
 package com.awbd.ecommerce.dto;
 
 import com.awbd.ecommerce.model.Category;
+import com.awbd.ecommerce.model.Review;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -31,9 +32,9 @@ public class ProductDTO {
     
     private byte[] photo;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+//    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private List<Category> categories;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private List<ReviewDTO> reviews;
+//    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private List<Review> reviews;
 }

@@ -5,9 +5,11 @@ import com.awbd.ecommerce.dto.UserProfileDTO;
 import com.awbd.ecommerce.model.security.User;
 import com.awbd.ecommerce.service.UserProfileService;
 import com.awbd.ecommerce.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,14 +35,14 @@ public class UserController {
         model.addAttribute("role", role);
         model.addAttribute("profile", userProfileDTO);
 
-        return "user-profile";
+        return "/users/user-profile";
     }
 
     @GetMapping("/show-users")
     public String findAll(Model model) {
         List<UserDTO> users = userService.findAll();
         model.addAttribute("users", users);
-        return "user-list";
+        return "users/user-list";
     }
 
     @RequestMapping("/users/{id}")
@@ -54,13 +56,17 @@ public class UserController {
         UserProfileDTO userProfileDTO = userProfileService.findByUserId(id);
         model.addAttribute("profile", userProfileDTO);
 
-        return "user-form";
+        return "users/user-form";
     }
 
     @PostMapping("/users")
-    public String saveOrUpdate(@ModelAttribute UserProfileDTO userProfileDTO) {
-        System.out.println("----user profile DTO");
-        System.out.println(userProfileDTO);
+    public String saveOrUpdate(@Valid @ModelAttribute("profile") UserProfileDTO userProfileDTO,
+                               BindingResult bindingResult,
+                               Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("profile", userProfileDTO);
+            return "users/user-form";
+        }
 
         userProfileService.save(userProfileDTO);
         return "redirect:/users/profile/" + userProfileDTO.getUserId();
@@ -69,11 +75,16 @@ public class UserController {
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         model.addAttribute("user", new User());
-        return "register";
+        return "auth/register";
     }
 
     @PostMapping("/register")
-    public String registerUserAccount(@ModelAttribute("user") User user) {
+    public String registerUserAccount(@Valid @ModelAttribute("user") User user, BindingResult bindingResult) {
+
+        if(bindingResult.hasErrors()) {
+            return "auth/register";
+        }
+
         userService.registerNewUser(user.getUsername(), user.getPassword());
         return "redirect:/login";
     }

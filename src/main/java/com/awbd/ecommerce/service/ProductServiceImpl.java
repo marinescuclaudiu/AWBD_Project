@@ -11,12 +11,12 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,7 +56,7 @@ public class ProductServiceImpl implements ProductService {
         log.info("Fetching product by ID: {}", id);
         Optional<Product> product = productRepository.findById(id);
 
-        if(product.isEmpty()){
+        if (product.isEmpty()) {
             log.error("Product with id {} not found!", id);
             throw new ResourceNotFoundException("Product with id" + id + " not found!");
         }
@@ -65,7 +65,7 @@ public class ProductServiceImpl implements ProductService {
         return modelMapper.map(product.get(), ProductDTO.class);
     }
 
-//    @Transactional
+    //    @Transactional
     @Override
     public void deleteById(Long id) {
         log.info("Deleting product by ID: {}", id);
@@ -85,7 +85,7 @@ public class ProductServiceImpl implements ProductService {
         log.info("Updating product with ID: {}", id);
         Optional<Product> product = productRepository.findById(id);
 
-        if(product.isEmpty()){
+        if (product.isEmpty()) {
             log.error("Product with id {} not found", id);
             throw new ResourceNotFoundException("Product with id " + id + " not found!");
         }
@@ -123,7 +123,7 @@ public class ProductServiceImpl implements ProductService {
         // check if the product has reviews
         Product product = productRepository.findById(id).get();
 
-        if(product.getReviews().isEmpty()) {
+        if (product.getReviews().isEmpty()) {
             return 0;
         }
 
@@ -137,16 +137,51 @@ public class ProductServiceImpl implements ProductService {
 
 
             byte[] byteObjects = new byte[file.getBytes().length];
-            int i = 0; for (byte b : file.getBytes()){
-                byteObjects[i++] = b; }
+            int i = 0;
+            for (byte b : file.getBytes()) {
+                byteObjects[i++] = b;
+            }
 
-            if (byteObjects.length > 0){
+            if (byteObjects.length > 0) {
                 product.setPhoto(byteObjects);
             }
 
             productRepository.save(product);
+        } catch (IOException e) {
         }
-        catch (IOException e) {
+    }
+
+    @Override
+    public Page<ProductDTO> findPaginated(Pageable pageable, String categoryName) {
+        if (categoryName == null) {
+            System.out.println("-------------------");
+            System.out.println("in null branch");
+
+            List<ProductDTO> dtoList = productRepository
+                    .findAll()
+                    .stream()
+                    .map(product -> modelMapper.map(product, ProductDTO.class))
+                    .collect(Collectors.toList());
+
+            int start = (int)pageable.getOffset();
+            int end = Math.min((start + pageable.getPageSize()), dtoList.size());
+
+            return new PageImpl<>(dtoList.subList(start, end), pageable, dtoList.size());
         }
+
+        List<ProductDTO> productDTOFilteredList = productRepository
+                .findByCategoryAndSortByPrice(categoryName)
+                .stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .collect(Collectors.toList());
+
+        int start = (int)pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), productDTOFilteredList.size());
+
+        return new PageImpl<>(
+                productDTOFilteredList.subList(start, end),
+                pageable,
+                productDTOFilteredList.size()
+        );
     }
 }

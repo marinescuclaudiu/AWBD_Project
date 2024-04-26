@@ -4,8 +4,10 @@ import com.awbd.ecommerce.dto.CategoryDTO;
 import com.awbd.ecommerce.dto.ProductDTO;
 import com.awbd.ecommerce.model.Category;
 import com.awbd.ecommerce.service.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,7 +25,7 @@ public class CategoryController {
     public String findAll(Model model) {
         List<CategoryDTO> categories = categoryService.findAll();
         model.addAttribute("categories", categories);
-        return "category-list";
+        return "/categories/category-list";
     }
 
     @GetMapping("/{id}")
@@ -35,13 +37,13 @@ public class CategoryController {
         List<ProductDTO> productsDTO = categoryService.findProductsByCategoryId(id);
         model.addAttribute("products", productsDTO);
 
-        return "category-details";
+        return "/categories/category-details";
     }
 
     @RequestMapping("/form")
     public String save(Model model) {
         model.addAttribute("category", new Category());
-        return "category-form";
+        return "categories/category-form";
     }
 
     @RequestMapping("/edit/{id}")
@@ -49,13 +51,20 @@ public class CategoryController {
         CategoryDTO categoryDTO = categoryService.findById(id);
         model.addAttribute("category", categoryDTO);
 
-        return "category-form";
+        return "/categories/category-form";
     }
 
     @PostMapping
-    public String saveOrUpdate(@ModelAttribute CategoryDTO categoryDTO) {
+    public String saveOrUpdate(@Valid @ModelAttribute("category") CategoryDTO categoryDTO,
+                               BindingResult bindingResult,
+                               Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("category", categoryDTO);
+            return "categories/category-form";
+        }
+
         categoryService.save(categoryDTO);
-        return "redirect:/categories" ;
+        return "redirect:categories" ;
     }
 
     @RequestMapping("/delete/{id}")

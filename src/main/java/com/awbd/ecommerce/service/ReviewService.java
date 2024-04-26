@@ -6,7 +6,6 @@ import java.util.List;
 
 public interface ReviewService {
     ReviewDTO save(ReviewDTO reviewDTO);
-
     List<ReviewDTO> findAll();
 
     ReviewDTO findById(Long id);

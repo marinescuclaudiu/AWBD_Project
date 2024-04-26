@@ -7,10 +7,16 @@ import com.awbd.ecommerce.model.Product;
 import com.awbd.ecommerce.service.CategoryService;
 import com.awbd.ecommerce.service.ProductService;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -18,7 +24,9 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/products")
@@ -32,12 +40,36 @@ public class ProductController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping
-    public String findAll(Model model) {
-        List<ProductDTO> products = productService.findAll();
-        model.addAttribute("products", products);
-        return "product-list";
+    @RequestMapping // /movies?page=1&size=10
+    public String getProductPage(Model model,
+                                 @RequestParam("page") Optional<Integer> page,
+                                 @RequestParam("size") Optional<Integer> size,
+                                 @RequestParam(required = false, value = "category") String category) {
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(10);
+
+        System.out.println("-----------------");
+        System.out.println("category: " + category);
+
+        Page<ProductDTO> productPage = productService.findPaginated(
+                PageRequest.of(currentPage - 1, pageSize), category
+        );
+
+        model.addAttribute("productPage", productPage);
+        model.addAttribute("category", category);
+
+        return "/products/product-list";
     }
+
+
+//    @RequestMapping
+//    public String getPagedAndSortedProducts(Pageable pageable, Model model) {
+//        Page<ProductDTO> productDTOPage = productService.getPagedAndSortedProducts(pageable);
+//
+//        model.addAttribute("productPage", productDTOPage);
+//
+//        return "/products/product-list";
+//    }
 
     @GetMapping("/{id}")
     public String findById(@PathVariable Long id, Model model) {
@@ -51,7 +83,7 @@ public class ProductController {
         double averageRating = productService.getAverageRatingByProductId(id);
         model.addAttribute("averageRating", averageRating);
 
-        return "product-details";
+        return "products/product-details";
     }
 
     @RequestMapping("/delete/{id}")
@@ -71,7 +103,7 @@ public class ProductController {
         List<CategoryDTO> allCategories = categoryService.findAll();
         model.addAttribute("allCategories", allCategories);
 
-        return "product-form";
+        return "products/product-form";
     }
 
     @RequestMapping("/edit/{id}")
@@ -83,12 +115,23 @@ public class ProductController {
         List<CategoryDTO> allCategories = categoryService.findAll();
         model.addAttribute("allCategories", allCategories);
 
-        return "product-form";
+        return "products/product-form";
     }
 
     @PostMapping
-    public String saveOrUpdate(@ModelAttribute ProductDTO product,
+    public String saveOrUpdate(@Valid @ModelAttribute("product") ProductDTO product,
+                               BindingResult bindingResult,
+                               Model model,
                                @RequestParam("imagefile") MultipartFile file) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("product", product);
+
+            List<CategoryDTO> allCategories = categoryService.findAll();
+            model.addAttribute("allCategories", allCategories);
+
+            return "products/product-form";
+        }
+
         if (file.isEmpty())
             productService.save(product);
         else
