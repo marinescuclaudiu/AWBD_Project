@@ -36,7 +36,10 @@ public class ReviewController {
     @GetMapping("/reviews")
     public String findAll(Model model) {
         List<ReviewDTO> reviews = reviewService.findAll();
+
         model.addAttribute("reviews", reviews);
+        isLoggedIn(model);
+
         return "products/review-form";
     }
 
@@ -46,6 +49,7 @@ public class ReviewController {
 
         model.addAttribute("product", productDTO);
         model.addAttribute("review", new ReviewDTO());
+        isLoggedIn(model);
 
         return "products/review-form"; // Assuming you have a template named "reviews.html"
     }
@@ -57,14 +61,16 @@ public class ReviewController {
 
         model.addAttribute("product", productDTO);
         model.addAttribute("review", reviewDTO);
+        isLoggedIn(model);
 
         return "products/review-form"; // Assuming you have a template named "reviews.html"
     }
 
     @PostMapping("/products/{productId}/review")
     public String saveOrUpdateReview(@ModelAttribute ReviewDTO reviewDTO,
-                                     @PathVariable Long productId) {
-        reviewDTO.setUserId(getCurrentUserId());
+                                     @PathVariable Long productId,
+                                     Model model) {
+        isLoggedIn(model);
         reviewService.save(reviewDTO);
 
         return "redirect:/products/" + productId;
@@ -72,16 +78,19 @@ public class ReviewController {
 
     @RequestMapping("/reviews/delete/{id}")
     public String deleteById(@PathVariable Long id) {
+        Long productId = reviewService.findById(id).getProductId();
+
         reviewService.deleteById(id);
-        return "redirect:/products/{id}";
+        return "redirect:/products/" + productId;
     }
 
-    public Long getCurrentUserId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        String username = authentication.getName();
-        UserDTO userDTO = userService.findByUsername(username);
-
-        return userDTO.getId();
+    private void isLoggedIn(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getPrincipal())) {
+            UserDTO userDTO = userService.findByUsername(auth.getName());
+            model.addAttribute("loggedUserId", userDTO.getId());
+        } else {
+            model.addAttribute("loggedUserId", null);
+        }
     }
 }

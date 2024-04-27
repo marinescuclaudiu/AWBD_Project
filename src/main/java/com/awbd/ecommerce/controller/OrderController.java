@@ -18,10 +18,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 public class OrderController {
@@ -44,11 +41,21 @@ public class OrderController {
     public String findById(@PathVariable Long id, Model model) {
         OrderDTO orderDTO = orderService.findById(id);
         model.addAttribute("order", orderDTO);
+        isLoggedIn(model);
 
         return "/orders/order-page";
     }
 
-    // TODO: findAll, deleteById, update, button to add or decrease wuantity
+    @GetMapping("/orders")
+    public String findAll(Model model) {
+        List<OrderDTO> orders = orderService.findAll();
+        model.addAttribute("orders", orders);
+        isLoggedIn(model);
+
+        return "orders/order-list";
+    }
+
+    // TODO: deleteById, update
 //
 //    @GetMapping
 //    public ResponseEntity<List<OrderDTO>> findAll() {
@@ -67,55 +74,6 @@ public class OrderController {
 //        return ResponseEntity.ok().body(orderService.update(id, orderDTO));
 //    }
 
-    //------------------------
-
-//    @PostMapping("/cart/increase")
-//    public String increaseQuantity(@RequestParam("productId") Long productId, HttpSession session) {
-//        System.out.println("---------------------");
-//        System.out.println("in function for increase");
-//
-//        updateQuantity(productId, 1, session);
-//        return "redirect:/cart";
-//    }
-//
-//    @PostMapping("/cart/decrease")
-//    public String decreaseQuantity(@RequestParam("productId") Long productId, HttpSession session) {
-//        updateQuantity(productId, -1, session);
-//        return "redirect:/cart";
-//    }
-//
-//    private void updateQuantity(Long productId, int change, HttpSession session) {
-//        List<OrderProductDTO> cart = (List<OrderProductDTO>) session.getAttribute("cart");
-//        if (cart == null) {
-//            cart = new ArrayList<>();
-//        }
-//        Optional<OrderProductDTO> productInCart = cart.stream()
-//                .filter(p -> productId.equals(p.getProductId()))
-//                .findFirst();
-//
-//        System.out.println("##----product in cart to be modified##");
-//        System.out.println(productInCart);
-//
-//        if (productInCart.isPresent()) {
-//            OrderProductDTO productDTO = productInCart.get();
-//            int newQuantity = productDTO.getQuantity() + change;
-//
-//            System.out.println("##----product in cart to be modified##");
-//            System.out.println(newQuantity);
-//
-//            if (newQuantity > 0) {
-//                productDTO.setQuantity(newQuantity);
-//            } else {
-//                cart.remove(productDTO);
-//            }
-//        } else if (change > 0) {
-//            // Add new product to cart if it's not present and increment is requested
-//            ProductDTO productDTO = productService.findById(productId);
-//            cart.add(new OrderProductDTO(productId, productDTO.getName(), 1));
-//        }
-//
-//        session.setAttribute("cart", cart);
-//    }
 
     @PostMapping("/cart/add")
     public String addToCart(Long productId, HttpSession session) {
@@ -125,8 +83,6 @@ public class OrderController {
         }
         cart.put(productId, cart.getOrDefault(productId, 0) + 1);
         session.setAttribute("cart", cart);
-
-        System.out.println(session.getAttribute("cart"));
 
         return "redirect:/products";
     }
@@ -147,6 +103,8 @@ public class OrderController {
         }
 
         model.addAttribute("productsInCart", productsInCart);
+        isLoggedIn(model);
+
         return "/orders/cart";
     }
 
@@ -198,5 +156,15 @@ public class OrderController {
         UserDTO userDTO = userService.findByUsername(username);
 
         return userDTO.getId();
+    }
+
+    private void isLoggedIn(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getPrincipal())) {
+            UserDTO userDTO = userService.findByUsername(auth.getName());
+            model.addAttribute("loggedUserId", userDTO.getId());
+        } else {
+            model.addAttribute("loggedUserId", null);
+        }
     }
 }

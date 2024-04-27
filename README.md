@@ -1,16 +1,11 @@
 What to do next:
-- pagination for products page
-- sorting for products page
-    - sort ASC/ DESC by price
-    - filter by category
-- validate data from forms
 - testing
     - repository
-    - service
-    - controller
+    - service ---> Claudiu
+    - controller --> Flavia
 
 
-## Requirements:
+## Requirements
 1. Vor fi create relații între entități de toate tipurile: 
    - @OneToOne ✅
    - @OneToMany ✅
@@ -24,10 +19,10 @@ What to do next:
 
 4. Utilizare unit-tests/integration tests. 🔃
 
-5. Se vor valida datele din formulare, se vor trata excepțiile. 🔃
+5. Se vor valida datele din formulare, se vor trata excepțiile.✅
 
 6. Se vor utiliza log-uri. Opțional aspecte. ✅
 
-7. Vor fi utilizate opțiuni de paginare și sortare a datelor. 🔃
+7. Vor fi utilizate opțiuni de paginare și sortare a datelor. ✅
 
 8. Se va include Spring Security (cerința minima autentificare jdbc). ✅
