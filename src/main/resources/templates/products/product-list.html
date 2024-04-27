@@ -10,6 +10,20 @@
     <link rel="stylesheet" href="/webjars/font-awesome/6.4.0/css/all.min.css"/>
 </head>
 
+<script th:inline="javascript">
+    $(document).ready(function () {
+        $('#category').change(function () {
+            let category = $(this).val();
+
+            if (category === "all") {
+                window.location.href = '/products';
+            } else if (category) {
+                window.location.href = '/products?category=' + category;
+            }
+        });
+    });
+</script>
+
 <body>
 
 <!--Navigation-->
@@ -85,13 +99,23 @@
 
     <hr/>
 
-    <!--  Button to add a new product-->
-    <a th:href="@{/products/form}"
-       class="btn btn-primary btn-sm mb-3">
-        Add Product
-    </a>
-    <!--  Button to add a new product-->
+    <div style="display: flex; justify-content: space-between; align-items: center">
+        <!--  Button to add a new product-->
+        <a th:href="@{/products/form}"
+           class="btn btn-primary btn-sm mb-3">
+            Add Product
+        </a>
+        <!--  Button to add a new product-->
 
+        <select name="category" id="category" aria-label=".form-option" style="height: fit-content">
+            <option value="all">Show All</option>
+            <option value="beds">Beds</option>
+            <option value="chairs">Chairs</option>
+            <option value="tables">Tables</option>
+            <option value="couches">Couches</option>
+        </select>
+
+    </div>
 
     <!-- List of products -->
     <table class="table table-hover table-responsive">

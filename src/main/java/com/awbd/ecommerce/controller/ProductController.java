@@ -68,7 +68,7 @@ public class ProductController {
         return "/products/product-list";
     }
 
-    @GetMapping("/{id}")
+    @RequestMapping("/{id}")
     public String findById(@PathVariable Long id, Model model) {
         ProductDTO productDTO = productService.findById(id);
         model.addAttribute("product", productDTO);
