@@ -7,6 +7,8 @@ import com.awbd.ecommerce.service.UserProfileService;
 import com.awbd.ecommerce.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -34,6 +36,7 @@ public class UserController {
         model.addAttribute("user", userDTO);
         model.addAttribute("role", role);
         model.addAttribute("profile", userProfileDTO);
+        isLoggedIn(model);
 
         return "/users/user-profile";
     }
@@ -42,6 +45,8 @@ public class UserController {
     public String findAll(Model model) {
         List<UserDTO> users = userService.findAll();
         model.addAttribute("users", users);
+        isLoggedIn(model);
+
         return "users/user-list";
     }
 
@@ -55,6 +60,7 @@ public class UserController {
     public String update(@PathVariable Long id, Model model) {
         UserProfileDTO userProfileDTO = userProfileService.findByUserId(id);
         model.addAttribute("profile", userProfileDTO);
+        isLoggedIn(model);
 
         return "users/user-form";
     }
@@ -87,5 +93,15 @@ public class UserController {
 
         userService.registerNewUser(user.getUsername(), user.getPassword());
         return "redirect:/login";
+    }
+
+    private void isLoggedIn(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getPrincipal())) {
+            UserDTO userDTO = userService.findByUsername(auth.getName());
+            model.addAttribute("loggedUserId", userDTO.getId());
+        } else {
+            model.addAttribute("loggedUserId", null);
+        }
     }
 }

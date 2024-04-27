@@ -1,8 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Orders</title>
+
+    <script src="/webjars/jquery/3.6.0/jquery.min.js"></script>
+    <script src="/webjars/bootstrap/5.3.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.2/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/webjars/font-awesome/6.4.0/css/all.min.css"/>
 </head>
 <body>
 
@@ -42,28 +47,30 @@
             </ul>
 
             <ul class="navbar-nav ms-auto">
-                <li>
-                    <a class="nav-link btn-primary" th:href="@{'/login'}">
-                        <i class="fas fa-sign-in-alt"></i> Sign In
-                    </a>
-                </li>
-
-                <li>
+                <li sec:authorize="hasRole('ADMIN')" class="nav-item">
                     <a class="nav-link btn-primary" th:href="@{'/show-users'}">
                         <i class="fa-solid fa-users"></i> Users
                     </a>
                 </li>
 
-                <li>
-                    <a class="nav-link btn-primary" th:href="@{'/users/profile/1'}">
+                <li th:if="${loggedUserId != null}">
+                    <a class="nav-link btn-primary" th:href="@{'/users/profile/' + ${loggedUserId}}">
                         <i class="fa-solid fa-address-card"></i> Profile
                     </a>
                 </li>
 
                 <li>
-                    <a class="nav-link" th:href="@{'/'}">
+                    <a class="nav-link" th:href="@{'/cart'}">
                         <i class="fa-solid fa-cart-shopping"></i> Cart
                     </a>
+                </li>
+
+                <li th:if="${loggedUserId != null}" class="nav-item">
+                    <form id="logout-form" th:action="@{/logout}" method="post">
+                        <button type="submit" class="nav-link btn-primary">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </form>
                 </li>
             </ul>
         </div>
@@ -75,7 +82,7 @@
 
     <hr/>
 
-    <table class="table table-bordered table-striped">
+    <table class="table table-responsive table-hover">
         <thead class="table-dark">
         <tr>
             <th>ID</th>
@@ -83,17 +90,24 @@
             <th>Total Amount</th>
             <th>Order Date</th>
             <th>Payment Method</th>
+            <th>Actions</th>
         </tr>
         </thead>
 
-        <tr th:each="order, stat : ${orders}"
-            th:class="${stat.odd}? 'table-light':''">
-            <td th:text="${orders.id}">1</td>
-            <td th:text="${orders.userId}">1</td>
-            <td th:text="${orders.userId}">1</td>
-            <td th:text="${orders.totalAmount}">1</td>
-            <td th:text="${orders.orderDate}">1</td>
-            <td th:text="${orders.paymentmethod}">1</td>
+        <tr th:each="order, stat : ${orders}">
+            <td th:text="${order.id}">1</td>
+            <td th:text="${order.userId}">1</td>
+            <td th:text="${order.totalAmount}">1</td>
+            <td th:text="${order.orderDate}">1</td>
+            <td th:text="${order.paymentMethod}">1</td>
+            <td>
+                <a th:href="@{'/orders/' + ${order.id}}"
+                   style="color: inherit; text-decoration: inherit"
+                   class="btn btn-outline-primary btn-sm mb-3"
+                >
+                    Show more info
+                </a>
+            </td>
         </tr>
 
     </table>

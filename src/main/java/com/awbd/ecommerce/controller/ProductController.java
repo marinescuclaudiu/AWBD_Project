@@ -2,10 +2,12 @@ package com.awbd.ecommerce.controller;
 
 import com.awbd.ecommerce.dto.CategoryDTO;
 import com.awbd.ecommerce.dto.ProductDTO;
+import com.awbd.ecommerce.dto.UserDTO;
 import com.awbd.ecommerce.exception.ResourceNotFoundException;
 import com.awbd.ecommerce.model.Product;
 import com.awbd.ecommerce.service.CategoryService;
 import com.awbd.ecommerce.service.ProductService;
+import com.awbd.ecommerce.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
@@ -14,6 +16,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -35,21 +39,21 @@ public class ProductController {
 
     CategoryService categoryService;
 
-    public ProductController(ProductService productService, CategoryService categoryService) {
+    UserService userService;
+
+    public ProductController(ProductService productService, CategoryService categoryService, UserService userService) {
         this.productService = productService;
         this.categoryService = categoryService;
+        this.userService = userService;
     }
 
-    @RequestMapping // /movies?page=1&size=10
+    @RequestMapping
     public String getProductPage(Model model,
                                  @RequestParam("page") Optional<Integer> page,
                                  @RequestParam("size") Optional<Integer> size,
                                  @RequestParam(required = false, value = "category") String category) {
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(10);
-
-        System.out.println("-----------------");
-        System.out.println("category: " + category);
 
         Page<ProductDTO> productPage = productService.findPaginated(
                 PageRequest.of(currentPage - 1, pageSize), category
@@ -58,18 +62,11 @@ public class ProductController {
         model.addAttribute("productPage", productPage);
         model.addAttribute("category", category);
 
+        // check if the current logged-in user is admin or no by user id
+        isLoggedIn(model);
+
         return "/products/product-list";
     }
-
-
-//    @RequestMapping
-//    public String getPagedAndSortedProducts(Pageable pageable, Model model) {
-//        Page<ProductDTO> productDTOPage = productService.getPagedAndSortedProducts(pageable);
-//
-//        model.addAttribute("productPage", productDTOPage);
-//
-//        return "/products/product-list";
-//    }
 
     @GetMapping("/{id}")
     public String findById(@PathVariable Long id, Model model) {
@@ -82,6 +79,9 @@ public class ProductController {
 
         double averageRating = productService.getAverageRatingByProductId(id);
         model.addAttribute("averageRating", averageRating);
+
+        // check if the current logged-in user is admin or no by user id
+        isLoggedIn(model);
 
         return "products/product-details";
     }
@@ -102,6 +102,9 @@ public class ProductController {
         // extract all categories
         List<CategoryDTO> allCategories = categoryService.findAll();
         model.addAttribute("allCategories", allCategories);
+
+        // check if the current logged-in user is admin or no by id
+        isLoggedIn(model);
 
         return "products/product-form";
     }
@@ -162,12 +165,13 @@ public class ProductController {
         }
     }
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ModelAndView handlerNotFoundException(Exception exception){
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.getModel().put("exception",exception);
-        modelAndView.setViewName("notFoundException");
-        return modelAndView;
+    private void isLoggedIn(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getPrincipal())) {
+            UserDTO userDTO = userService.findByUsername(auth.getName());
+            model.addAttribute("loggedUserId", userDTO.getId());
+        } else {
+            model.addAttribute("loggedUserId", null);
+        }
     }
 }

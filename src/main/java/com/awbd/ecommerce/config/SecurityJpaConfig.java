@@ -29,6 +29,8 @@ public class SecurityJpaConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeRequests(auth -> auth
                         .requestMatchers("/main").permitAll()
+                        .requestMatchers("/register").permitAll()
+                        .requestMatchers("/", "/webjars/**", "/login", "/resources/**").permitAll()
                         .requestMatchers("/show-users").hasRole("ADMIN")
                         .requestMatchers("/products/form").hasRole("ADMIN")
                         .requestMatchers("/products/delete/*").hasRole("ADMIN")
@@ -36,8 +38,6 @@ public class SecurityJpaConfig {
                         .requestMatchers("/categories/form").hasAnyRole("ADMIN")
                         .requestMatchers("/categories/edit/*").hasAnyRole("ADMIN")
                         .requestMatchers("/categories/delete/*").hasAnyRole("ADMIN")
-                        .requestMatchers("/", "/webjars/**", "/login", "/resources/**").permitAll()
-                        .requestMatchers("/register").permitAll()
                         .requestMatchers("/products/*").hasAnyRole("ADMIN", "GUEST")
                         .requestMatchers("/categories/*").hasAnyRole("ADMIN", "GUEST")
                         .requestMatchers("/users/*").hasAnyRole("ADMIN", "GUEST")

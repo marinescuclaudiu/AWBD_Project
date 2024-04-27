@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Cart</title>
@@ -48,35 +48,45 @@
             </ul>
 
             <ul class="navbar-nav ms-auto">
-                <li>
-                    <a class="nav-link btn-primary" th:href="@{'/login'}">
-                        <i class="fas fa-sign-in-alt"></i> Sign In
+                <li sec:authorize="hasRole('ADMIN')" class="nav-item">
+                    <a class="nav-link btn-primary" th:href="@{'/show-users'}">
+                        <i class="fa-solid fa-users"></i> Users
+                    </a>
+                </li>
+
+                <li th:if="${loggedUserId != null}">
+                    <a class="nav-link btn-primary" th:href="@{'/users/profile/' + ${loggedUserId}}">
+                        <i class="fa-solid fa-address-card"></i> Profile
                     </a>
                 </li>
 
                 <li>
-                    <a class="nav-link btn-primary" th:href="@{'/register'}">
-                        <i class="fas fa-user-plus"></i> Register
-                    </a>
-                </li>
-
-                <li>
-                    <a class="nav-link" th:href="@{'/'}">
+                    <a class="nav-link" th:href="@{'/cart'}">
                         <i class="fa-solid fa-cart-shopping"></i> Cart
                     </a>
+                </li>
+
+                <li th:if="${loggedUserId != null}" class="nav-item">
+                    <form id="logout-form" th:action="@{/logout}" method="post">
+                        <button type="submit" class="nav-link btn-primary">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </form>
                 </li>
             </ul>
         </div>
     </div>
 </nav>
 <!--Navigation-->
+
 <div class="container">
     <h1>Cart</h1>
 
     <hr/>
 
     <div th:if="${productsInCart.isEmpty()}">
-        <p>Your cart is empty</p>
+        <p>Your cart is empty...</p>
+        <img style="width: 500px" th:src="@{/empty_cart.png}" alt="sleepy bag" />
     </div>
 
     <div th:each="productEntry : ${productsInCart}" class="mb-4">
@@ -85,107 +95,96 @@
                 <p th:text="'Product name: ' + ${productEntry.key.name}">Product Name</p>
                 <p th:text="'Price: ' + ${productEntry.key.price} + '€'">100€</p>
                 <p th:text="'Quantity: ' + ${productEntry.value}">Quantity</p>
-<!--                <form th:action="@{/cart/increase}" method="post">-->
-<!--                    <input type="hidden" name="productId" th:value="${productEntry.key.id}" />-->
-<!--                    <button type="submit">-->
-<!--                        +-->
-<!--                    </button>-->
-<!--                </form>-->
-<!--                <form th:action="@{/cart/decrease}" method="post">-->
-<!--                    <input type="hidden" name="productId" th:value="${productEntry.key.id}" />-->
-<!--                    <button type="submit">-->
-<!--                        - -->
-<!--                    </button>-->
-<!--                </form>-->
             </div>
         </div>
     </div>
 
-    <!--    <p class="fw-bold" th:text="'Total amount: ' + ${totalAmount}">100€</p>-->
 
-    <h1>Enter Shipping Address</h1>
-    <form th:action="@{/placeOrder}" method="post" class="mb-lg-5">
-<!--        <input th:field="*{id}" type="hidden"/>-->
+    <div th:if="${!productsInCart.isEmpty()}">
+        <h3>Enter Shipping Address</h3>
+        <form th:action="@{/placeOrder}" method="post" class="mb-lg-5">
+            <!--        <input th:field="*{id}" type="hidden"/>-->
 
-        <div class="row">
-            <div class="col-4">
-                <div class="form-group">
-                    <label for="street">Street</label>
-                    <input
-                            type="text"
-                            name="street"
-                            id="street"
-                            placeholder="Street"
-                            class="form-control mb-4"
-                            required
-                    >
+            <div class="row">
+                <div class="col-4">
+                    <div class="form-group">
+                        <label for="street">Street</label>
+                        <input
+                                type="text"
+                                name="street"
+                                id="street"
+                                placeholder="Str. Libertatii"
+                                class="form-control mb-4"
+                                required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="city">City</label>
+                        <input
+                                type="text"
+                                name="city"
+                                id="city"
+                                placeholder="Bacau"
+                                class="form-control mb-4"
+                                required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="zipCode">Zip Code</label>
+                        <input
+                                type="text"
+                                name="zipCode"
+                                id="zipCode"
+                                placeholder="123456"
+                                class="form-control mb-4"
+                                required
+                        >
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="city">City</label>
-                    <input
-                            type="text"
-                            name="city"
-                            id="city"
-                            placeholder="City"
-                            class="form-control mb-4"
-                            required
-                    >
-                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        <label for="country">Country</label>
+                        <input
+                                type="text"
+                                name="country"
+                                id="country"
+                                placeholder="Romania"
+                                class="form-control mb-4"
+                                required
+                        >
+                    </div>
 
-                <div class="form-group">
-                    <label for="zipCode">Zip Code</label>
-                    <input
-                            type="text"
-                            name="zipCode"
-                            id="zipCode"
-                            placeholder="Zip Code"
-                            class="form-control mb-4"
-                            required
-                    >
+                    <div class="form-group">
+                        <label for="district">District</label>
+                        <input
+                                type="text"
+                                name="district"
+                                id="district"
+                                class="form-control mb-4"
+                                placeholder="Bacau"
+                                required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="payment">Choose the payment method:</label>
+                        <select name="paymentMethod" id="payment" class="form-select" aria-label="Open the menu">>
+                            <option value="CREDIT_CARD">CREDIT CARD</option>
+                            <option value="DEBIT_CARD">DEBIT CARD</option>
+                            <option value="PAYPAL">PAYPAL</option>
+                            <option value="BANK_TRANSFER">BANK TRANSFER</option>
+                            <option value="CASH_ON_DELIVERY">CASH ON DELIVERY</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
-            <div class="col-4">
-                <div class="form-group">
-                    <label for="country">Country</label>
-                    <input
-                            type="text"
-                            name="country"
-                            id="country"
-                            placeholder="Country"
-                            class="form-control mb-4"
-                            required
-                    >
-                </div>
-
-                <div class="form-group">
-                    <label for="district">District</label>
-                    <input
-                            type="text"
-                            name="district"
-                            id="district"
-                            class="form-control mb-4"
-                            placeholder="District"
-                            required
-                    >
-                </div>
-
-                <div class="form-group">
-                    <label for="payment">Choose the payment method:</label>
-                    <select name="paymentMethod" id="payment" class="form-select" aria-label="Open the menu">>
-                        <option value="CREDIT_CARD">CREDIT CARD</option>
-                        <option value="DEBIT_CARD">DEBIT CARD</option>
-                        <option value="PAYPAL">PAYPAL</option>
-                        <option value="BANK_TRANSFER">BANK TRANSFER</option>
-                        <option value="CASH_ON_DELIVERY">CASH ON DELIVERY</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Place Order</button>
-    </form>
+            <button type="submit" class="btn btn-primary">Place Order</button>
+        </form>
+    </div>
 </div>
 
 </body>

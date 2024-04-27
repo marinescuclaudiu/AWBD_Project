@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Categories</title>
@@ -48,22 +48,30 @@
             </ul>
 
             <ul class="navbar-nav ms-auto">
-                <li>
-                    <a class="nav-link btn-primary" th:href="@{'/login'}">
-                        <i class="fas fa-sign-in-alt"></i> Sign In
+                <li sec:authorize="hasRole('ADMIN')" class="nav-item">
+                    <a class="nav-link btn-primary" th:href="@{'/show-users'}">
+                        <i class="fa-solid fa-users"></i> Users
+                    </a>
+                </li>
+
+                <li th:if="${loggedUserId != null}">
+                    <a class="nav-link btn-primary" th:href="@{'/users/profile/' + ${loggedUserId}}">
+                        <i class="fa-solid fa-address-card"></i> Profile
                     </a>
                 </li>
 
                 <li>
-                    <a class="nav-link btn-primary" th:href="@{'/clients/form'}">
-                        <i class="fas fa-user-plus"></i> Register
-                    </a>
-                </li>
-
-                <li>
-                    <a class="nav-link" th:href="@{'/'}">
+                    <a class="nav-link" th:href="@{'/cart'}">
                         <i class="fa-solid fa-cart-shopping"></i> Cart
                     </a>
+                </li>
+
+                <li th:if="${loggedUserId != null}" class="nav-item">
+                    <form id="logout-form" th:action="@{/logout}" method="post">
+                        <button type="submit" class="nav-link btn-primary">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </form>
                 </li>
             </ul>
         </div>
@@ -87,34 +95,37 @@
 
     <table class="table table-responsive table-hover">
         <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Action</th>
-            </tr>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Action</th>
+        </tr>
         </thead>
 
-        <tr th:each="category, stat : ${categories}"
-            th:class="${stat.odd}? 'table-light':''">
+        <tr th:each="category, stat : ${categories}">
             <td th:text="${category.id}">1</td>
             <td>
                 <a th:href="@{'/categories/' + ${category.id}}" th:text="${category.name}"
                    style="color: inherit; text-decoration: inherit"
-                   class="text-uppercase"
-                >
+                   class="text-uppercase">
                     Name of the category
                 </a>
             </td>
             <td>
-                <a href="#" th:href="@{'/categories/edit/' + ${category.id}}"
+                <a sec:authorize="hasRole('ADMIN')" href="#" th:href="@{'/categories/edit/' + ${category.id}}"
                    class="btn btn-info btn-sm mb-3">
                     Update
                 </a>
 
-                <a href="#" th:href="@{'/categories/delete/' + ${category.id}}"
+                <a sec:authorize="hasRole('ADMIN')" href="#" th:href="@{'/categories/delete/' + ${category.id}}"
                    class="btn btn-danger btn-sm mb-3"
                    onclick="if (!(confirm('Are you sure you want to delete this category?'))) return false">
                     Delete
+                </a>
+
+                <a href="#" th:href="@{'/categories/' + ${category.id}}"
+                   class="btn btn-outline-primary btn-sm mb-3">
+                    Show all products
                 </a>
             </td>
         </tr>
