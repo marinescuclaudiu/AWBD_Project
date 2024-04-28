@@ -28,14 +28,12 @@ public class SecurityJpaConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeRequests(auth -> auth
-                        .requestMatchers("/main").permitAll()
-                        .requestMatchers("/register").permitAll()
-                        .requestMatchers("/", "/webjars/**", "/login", "/resources/**").permitAll()
-                        .requestMatchers("/show-users").hasRole("ADMIN")
                         .requestMatchers("/products/form").hasRole("ADMIN")
+                        .requestMatchers("/categories/form").hasRole("ADMIN")
+                        .requestMatchers("/", "/webjars/**", "/login", "/resources/**", "main", "register").permitAll()
+                        .requestMatchers("/show-users").hasRole("ADMIN")
                         .requestMatchers("/products/delete/*").hasRole("ADMIN")
                         .requestMatchers("/products/edit/*").hasRole("ADMIN")
-                        .requestMatchers("/categories/form").hasAnyRole("ADMIN")
                         .requestMatchers("/categories/edit/*").hasAnyRole("ADMIN")
                         .requestMatchers("/categories/delete/*").hasAnyRole("ADMIN")
                         .requestMatchers("/products/*").hasAnyRole("ADMIN", "GUEST")
@@ -43,6 +41,7 @@ public class SecurityJpaConfig {
                         .requestMatchers("/users/*").hasAnyRole("ADMIN", "GUEST")
                         .anyRequest().authenticated()
                 )
+                .userDetailsService(userDetailsService)
                 .formLogin(formLogin ->
                         formLogin
                                 .loginPage("/login")
@@ -54,7 +53,6 @@ public class SecurityJpaConfig {
                                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                                 .permitAll()
                 )
-                .userDetailsService(userDetailsService)
                 .exceptionHandling(ex -> ex.accessDeniedPage("/access_denied"))
                 .build();
     }

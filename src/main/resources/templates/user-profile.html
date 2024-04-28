@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Orders</title>
+    <title>User Profile</title>
 
     <script src="/webjars/jquery/3.6.0/jquery.min.js"></script>
     <script src="/webjars/bootstrap/5.3.2/js/bootstrap.min.js"></script>
@@ -11,6 +11,7 @@
 </head>
 <body>
 
+<!--Navigation-->
 <nav class="navbar navbar-expand-lg navbar-light mb-3" style="background-color: #e3f2fd;">
     <div class="container">
         <a class="navbar-brand" href="#" th:href="@{'/'}">
@@ -47,25 +48,13 @@
             </ul>
 
             <ul class="navbar-nav ms-auto">
-                <li sec:authorize="hasRole('ADMIN')" class="nav-item">
-                    <a class="nav-link btn-primary" th:href="@{'/show-users'}">
-                        <i class="fa-solid fa-users"></i> Users
-                    </a>
-                </li>
-
-                <li th:if="${loggedUserId != null}">
-                    <a class="nav-link btn-primary" th:href="@{'/users/profile/' + ${loggedUserId}}">
-                        <i class="fa-solid fa-address-card"></i> Profile
-                    </a>
-                </li>
-
                 <li>
                     <a class="nav-link" th:href="@{'/cart'}">
                         <i class="fa-solid fa-cart-shopping"></i> Cart
                     </a>
                 </li>
 
-                <li th:if="${loggedUserId != null}" class="nav-item">
+                <li class="nav-item">
                     <form id="logout-form" th:action="@{/logout}" method="post">
                         <button type="submit" class="nav-link btn-primary">
                             <i class="fas fa-sign-out-alt"></i> Logout
@@ -76,41 +65,46 @@
         </div>
     </div>
 </nav>
+<!--Navigation-->
 
 <div class="container">
-    <h2>List of orders</h2>
+    <h2 th:text="'Profile of the user with id #' + ${user.id}">
+        Profile of the user with id #1
+    </h2>
 
     <hr/>
 
-    <table class="table table-responsive table-hover">
-        <thead class="table-dark">
-        <tr>
-            <th>ID</th>
-            <th>User ID</th>
-            <th>Total Amount</th>
-            <th>Order Date</th>
-            <th>Payment Method</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
+    <div class="row">
+        <div class="col-md-6">
+            <p class="fw-bold">
+                Username:
+                <span class="fw-normal" th:text="${user.username}">User123</span>
+            </p>
+            <p class="fw-bold">
+                Role:
+                <span class="fw-normal" th:text="${role}">ROLE_GUEST</span>
+            </p>
+            <p class="fw-bold">
+                First Name:
+                <span class="fw-normal" th:text="${profile.firstName}">Unknown first name</span>
+            </p>
+            <p class="fw-bold">
+                Last Name:
+                <span class="fw-normal" th:text="${profile.lastName}">Unknown last name</span>
+            </p>
+            <p class="fw-bold">
+                Phone Number:
+                <span class="fw-normal" th:text="${profile.phoneNumber}">0123456789</span>
+            </p>
+        </div>
+    </div>
 
-        <tr th:each="order, stat : ${orders}">
-            <td th:text="${order.id}">1</td>
-            <td th:text="${order.userId}">1</td>
-            <td th:text="${order.totalAmount}">1</td>
-            <td th:text="${order.orderDate}">1</td>
-            <td th:text="${order.paymentMethod}">1</td>
-            <td>
-                <a th:href="@{'/orders/' + ${order.id}}"
-                   style="color: inherit; text-decoration: inherit"
-                   class="btn btn-outline-primary btn-sm mb-3"
-                >
-                    Show more info
-                </a>
-            </td>
-        </tr>
-
-    </table>
+    <!--  Button to update the profile -->
+    <a th:href="@{'/users/edit/' + ${user.id}}"
+       class="btn btn-primary btn-sm mb-3">
+        Update
+    </a>
+    <!--  Button to update the profile -->
 
 </div>
 

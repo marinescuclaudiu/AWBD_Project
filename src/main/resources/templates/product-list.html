@@ -2,13 +2,28 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Category Details</title>
+    <title>Product List</title>
 
     <script src="/webjars/jquery/3.6.0/jquery.min.js"></script>
     <script src="/webjars/bootstrap/5.3.2/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="/webjars/bootstrap/5.3.2/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/webjars/font-awesome/6.4.0/css/all.min.css"/>
 </head>
+
+<script th:inline="javascript">
+    $(document).ready(function () {
+        $('#category').change(function () {
+            let category = $(this).val();
+
+            if (category === "all") {
+                window.location.href = '/products';
+            } else if (category) {
+                window.location.href = '/products?category=' + category;
+            }
+        });
+    });
+</script>
+
 <body>
 
 <!--Navigation-->
@@ -48,25 +63,13 @@
             </ul>
 
             <ul class="navbar-nav ms-auto">
-                <li sec:authorize="hasRole('ADMIN')" class="nav-item">
-                    <a class="nav-link btn-primary" th:href="@{'/show-users'}">
-                        <i class="fa-solid fa-users"></i> Users
-                    </a>
-                </li>
-
-                <li th:if="${loggedUserId != null}">
-                    <a class="nav-link btn-primary" th:href="@{'/users/profile/' + ${loggedUserId}}">
-                        <i class="fa-solid fa-address-card"></i> Profile
-                    </a>
-                </li>
-
                 <li>
                     <a class="nav-link" th:href="@{'/cart'}">
                         <i class="fa-solid fa-cart-shopping"></i> Cart
                     </a>
                 </li>
 
-                <li th:if="${loggedUserId != null}" class="nav-item">
+                <li class="nav-item">
                     <form id="logout-form" th:action="@{/logout}" method="post">
                         <button type="submit" class="nav-link btn-primary">
                             <i class="fas fa-sign-out-alt"></i> Logout
@@ -80,12 +83,29 @@
 <!--Navigation-->
 
 <div class="container">
-
-    <h2 th:text="${category.name}" class="text-capitalize">Category Name</h2>
+    <h2>List of available products</h2>
 
     <hr/>
 
-    <!--    View all the products of this category -->
+    <div style="display: flex; justify-content: space-between; align-items: center">
+        <!--  Button to add a new product-->
+        <a th:href="@{/products/form}"
+           class="btn btn-primary btn-sm mb-3">
+            Add Product
+        </a>
+        <!--  Button to add a new product-->
+
+        <select name="category" id="category" aria-label=".form-option" style="height: fit-content">
+            <option value="all">Show All</option>
+            <option value="beds">Beds</option>
+            <option value="chairs">Chairs</option>
+            <option value="tables">Tables</option>
+            <option value="couches">Couches</option>
+        </select>
+
+    </div>
+
+    <!-- List of products -->
     <table class="table table-hover table-responsive">
         <thead class="table-dark">
         <tr>
@@ -97,7 +117,7 @@
         </tr>
         </thead>
 
-        <tr th:each="product, stat : ${products}">
+        <tr th:each="product, stat : ${productPage}">
             <td th:text="${product.id}">1</td>
             <td>
                 <a th:href="@{'/products/' + ${product.id}}" th:text="${product.name}"
@@ -127,12 +147,82 @@
                     </button>
                 </form>
             </td>
-
         </tr>
 
     </table>
     <!-- List of products -->
+
+
+    <!-- List of pages -->
+    <aside th:if="${productPage.totalPages > 0}" aria-label="Page navigation example">
+        <ul class="pagination">
+
+            <!--            Previous-->
+            <li class="page-item" th:if="${productPage.number > 0 && category != null}">
+                <a th:href="@{/templates/products(size=${productPage.size}, page=${productPage.number},category=${category})}"
+                   class="page-link">
+                    Previous
+                </a>
+            </li>
+
+            <li class="page-item" th:if="${productPage.number > 0 && category == null}">
+                <a th:href="@{/templates/products(size=${productPage.size}, page=${productPage.number})}"
+                   class="page-link">
+                    Previous
+                </a>
+            </li>
+            <!--            Previous-->
+
+            <!--            Current-->
+            <li th:each="pageNumber : ${#numbers.sequence(1,T(java.lang.Math).min(7,productPage.totalPages))}"
+                th:class="${pageNumber==productPage.number + 1} ? 'page-item active':   'page-item'">
+                <a class="page-link"
+                   th:if="${category == null}"
+                   th:text="${pageNumber}"
+                   th:href="@{/templates/products(size=${productPage.size}, page=${pageNumber})}">
+                    1
+                </a>
+
+                <a class="page-link"
+                   th:if="${category != null}"
+                   th:text="${pageNumber}"
+                   th:href="@{/templates/products(size=${productPage.size}, page=${pageNumber}, category=${category})}">
+                    1
+                </a>
+            </li>
+            <!--            Current-->
+
+            <!--            Elips-->
+            <li th:class="${productPage.number>6} ? 'page-item active':  'page-item'"
+                th:if="${productPage.totalPages > 6}">
+                <a class="page-link" href="#">...</a>
+            </li>
+            <!--            Elips-->
+
+            <!--            Next-->
+            <li th:if="${productPage.number < productPage.totalPages && category != null}" class="page-item">
+                <a th:if="${productPage.number < productPage.totalPages}"
+                   th:href="@{/templates/products(size=${productPage.size},page=${productPage.number+2},category=${category})}"
+                   class="page-link">
+                    Next
+                </a>
+            </li>
+
+            <li th:if="${productPage.number < productPage.totalPages && category == null}" class="page-item">
+                <a th:if="${productPage.number < productPage.totalPages}"
+                   th:href="@{/templates/products(size=${productPage.size},page=${productPage.number+2})}"
+                   class="page-link">
+                    Next
+                </a>
+            </li>
+            <!--            Next-->
+
+        </ul>
+
+    </aside>
+    <!-- List of pages -->
 </div>
 
 </body>
+
 </html>

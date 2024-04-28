@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Review Form</title>
+    <title>Category Form</title>
 
     <script src="/webjars/jquery/3.6.0/jquery.min.js"></script>
     <script src="/webjars/bootstrap/5.3.2/js/bootstrap.min.js"></script>
@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="/webjars/font-awesome/6.4.0/css/all.min.css"/>
 </head>
 <body>
+
 <!--Navigation-->
 <nav class="navbar navbar-expand-lg navbar-light mb-3" style="background-color: #e3f2fd;">
     <div class="container">
@@ -47,25 +48,13 @@
             </ul>
 
             <ul class="navbar-nav ms-auto">
-                <li sec:authorize="hasRole('ADMIN')" class="nav-item">
-                    <a class="nav-link btn-primary" th:href="@{'/show-users'}">
-                        <i class="fa-solid fa-users"></i> Users
-                    </a>
-                </li>
-
-                <li th:if="${loggedUserId != null}">
-                    <a class="nav-link btn-primary" th:href="@{'/users/profile/' + ${loggedUserId}}">
-                        <i class="fa-solid fa-address-card"></i> Profile
-                    </a>
-                </li>
-
                 <li>
                     <a class="nav-link" th:href="@{'/cart'}">
                         <i class="fa-solid fa-cart-shopping"></i> Cart
                     </a>
                 </li>
 
-                <li th:if="${loggedUserId != null}" class="nav-item">
+                <li class="nav-item">
                     <form id="logout-form" th:action="@{/logout}" method="post">
                         <button type="submit" class="nav-link btn-primary">
                             <i class="fas fa-sign-out-alt"></i> Logout
@@ -78,50 +67,34 @@
 </nav>
 <!--Navigation-->
 
-
 <div class="container">
 
-    <h2>Form for adding or updating a review</h2>
+    <h2>Form for adding or updating a category</h2>
 
     <hr/>
 
-    <form enctype="multipart/form-data" method="post" th:object="${review}" th:action="@{'/products/' + ${product.getId()} + '/review'}" class="mb-lg-5">
-        <input type="hidden" th:field="*{id}" />
+    <form enctype="multipart/form-data" method="post" th:object="${category}" th:action="@{/templates/categories}"
+          class="mb-lg-5">
+        <input th:field="*{id}" type="hidden"/>
 
-        <div class="row">
-            <div class="col-6">
-
-                <div class="form-group">
-                    <label class="form-label" for="rating">Rating (1-5)</label>
-                    <input
-                            type="range"
-                            id="rating"
-                            name="rating"
-                            min="1" max="5"
-                            class="form-range mb-4"
-                            th:field="*{rating}"
-                    >
-                </div>
-
-                <div class="form-group">
-                    <label for="content">Content</label>
-                    <textarea
-                            id="content"
-                            placeholder="Enter your comment about the product"
-                            rows="2"
-                            th:field="*{content}"
-                            class="form-control mb-4 no-gutters"
-                    ></textarea>
-                </div>
-
-                <!--Submit button-->
-                <div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
-                <!--Submit button-->
-            </div>
-
+        <div>
+            <label for="name">Name</label>
+            <input
+                    type="text"
+                    id="name"
+                    th:field="*{name}"
+                    placeholder="Type a short name"
+                    class="form-control mb-4 w-25"
+            />
+            <p th:errors="*{name}" class="text-danger"
+               th:if="${#fields.hasErrors('name')}"></p>
         </div>
+
+        <!--Submit button-->
+        <div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+        <!--Submit button-->
     </form>
 </div>
 

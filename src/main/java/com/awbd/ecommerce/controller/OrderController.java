@@ -1,6 +1,7 @@
 package com.awbd.ecommerce.controller;
 
 import com.awbd.ecommerce.dto.*;
+import com.awbd.ecommerce.exception.ResourceNotFoundException;
 import com.awbd.ecommerce.model.Address;
 import com.awbd.ecommerce.model.PaymentMethod;
 import com.awbd.ecommerce.service.OrderService;
@@ -13,10 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -39,41 +37,35 @@ public class OrderController {
 
     @GetMapping("/orders/{id}")
     public String findById(@PathVariable Long id, Model model) {
-        OrderDTO orderDTO = orderService.findById(id);
-        model.addAttribute("order", orderDTO);
-        isLoggedIn(model);
+        try {
+            OrderDTO orderDTO = orderService.findById(id);
+            model.addAttribute("order", orderDTO);
+            return "order-page";
+        } catch (ResourceNotFoundException exception) {
+            model.addAttribute("exception", exception);
+            return "notFoundException";
+        }
 
-        return "/orders/order-page";
     }
 
     @GetMapping("/orders")
     public String findAll(Model model) {
         List<OrderDTO> orders = orderService.findAll();
         model.addAttribute("orders", orders);
-        isLoggedIn(model);
 
-        return "orders/order-list";
+        return "order-list";
     }
 
-    // TODO: deleteById, update
-//
-//    @GetMapping
-//    public ResponseEntity<List<OrderDTO>> findAll() {
-//        List<OrderDTO> orders = orderService.findAll();
-//        return ResponseEntity.ok().body(orders);
-//    }
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
-//        orderService.deleteById(id);
-//        return ResponseEntity.noContent().build();
-//    }
-//
-//    @PatchMapping("/{id}")
-//    public ResponseEntity<OrderDTO> update(@PathVariable Long id, @RequestBody OrderDTO orderDTO){
-//        return ResponseEntity.ok().body(orderService.update(id, orderDTO));
-//    }
-
+    @RequestMapping("/orders/delete/{id}")
+    public String deleteById(@PathVariable Long id, Model model) {
+        try {
+            orderService.deleteById(id);
+            return "redirect:/orders";
+        } catch (ResourceNotFoundException exception) {
+            model.addAttribute("exception", exception);
+            return "notFoundException";
+        }
+    }
 
     @PostMapping("/cart/add")
     public String addToCart(Long productId, HttpSession session) {
@@ -87,7 +79,7 @@ public class OrderController {
         return "redirect:/products";
     }
 
-    @GetMapping("/cart")
+    @RequestMapping("/cart")
     public String showCart(Model model, HttpSession session) {
         Map<Long, Integer> cart = (Map<Long, Integer>) session.getAttribute("cart");
         if (cart == null) {
@@ -103,9 +95,8 @@ public class OrderController {
         }
 
         model.addAttribute("productsInCart", productsInCart);
-        isLoggedIn(model);
 
-        return "/orders/cart";
+        return "cart";
     }
 
 
@@ -156,15 +147,5 @@ public class OrderController {
         UserDTO userDTO = userService.findByUsername(username);
 
         return userDTO.getId();
-    }
-
-    private void isLoggedIn(Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getPrincipal())) {
-            UserDTO userDTO = userService.findByUsername(auth.getName());
-            model.addAttribute("loggedUserId", userDTO.getId());
-        } else {
-            model.addAttribute("loggedUserId", null);
-        }
     }
 }

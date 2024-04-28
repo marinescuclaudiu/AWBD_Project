@@ -2,13 +2,12 @@ package com.awbd.ecommerce.controller;
 
 import com.awbd.ecommerce.dto.UserDTO;
 import com.awbd.ecommerce.dto.UserProfileDTO;
+import com.awbd.ecommerce.exception.ResourceNotFoundException;
 import com.awbd.ecommerce.model.security.User;
 import com.awbd.ecommerce.service.UserProfileService;
 import com.awbd.ecommerce.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,40 +28,51 @@ public class UserController {
 
     @RequestMapping("/users/profile/{id}")
     public String findById(@PathVariable Long id, Model model) {
-        UserDTO userDTO = userService.findById(id);
-        String role = userService.findRoleOfUserByUserId(id);
-        UserProfileDTO userProfileDTO = userProfileService.findByUserId(id);
+        try {
+            UserDTO userDTO = userService.findById(id);
+            String role = userService.findRoleOfUserByUserId(id);
+            UserProfileDTO userProfileDTO = userProfileService.findByUserId(id);
 
-        model.addAttribute("user", userDTO);
-        model.addAttribute("role", role);
-        model.addAttribute("profile", userProfileDTO);
-        isLoggedIn(model);
+            model.addAttribute("user", userDTO);
+            model.addAttribute("role", role);
+            model.addAttribute("profile", userProfileDTO);
 
-        return "/users/user-profile";
+            return "user-profile";
+        } catch (ResourceNotFoundException exception) {
+            model.addAttribute("exception", exception);
+            return "notFoundException";
+        }
     }
 
     @GetMapping("/show-users")
     public String findAll(Model model) {
         List<UserDTO> users = userService.findAll();
         model.addAttribute("users", users);
-        isLoggedIn(model);
 
-        return "users/user-list";
+        return "user-list";
     }
 
     @RequestMapping("/users/{id}")
-    public String deleteById(@PathVariable Long id) {
-        userService.deleteById(id);
-        return "redirect:/users";
+    public String deleteById(@PathVariable Long id, Model model) {
+        try {
+            userService.deleteById(id);
+            return "redirect:/users";
+        } catch (ResourceNotFoundException exception) {
+            model.addAttribute("exception", exception);
+            return "notFoundException";
+        }
     }
 
     @RequestMapping("/users/edit/{id}")
     public String update(@PathVariable Long id, Model model) {
-        UserProfileDTO userProfileDTO = userProfileService.findByUserId(id);
-        model.addAttribute("profile", userProfileDTO);
-        isLoggedIn(model);
-
-        return "users/user-form";
+        try {
+            UserProfileDTO userProfileDTO = userProfileService.findByUserId(id);
+            model.addAttribute("profile", userProfileDTO);
+            return "user-form";
+        } catch (ResourceNotFoundException exception) {
+            model.addAttribute("exception", exception);
+            return "notFoundException";
+        }
     }
 
     @PostMapping("/users")
@@ -71,7 +81,7 @@ public class UserController {
                                Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("profile", userProfileDTO);
-            return "users/user-form";
+            return "user-form";
         }
 
         userProfileService.save(userProfileDTO);
@@ -81,27 +91,17 @@ public class UserController {
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         model.addAttribute("user", new User());
-        return "auth/register";
+        return "register-new-user";
     }
 
     @PostMapping("/register")
     public String registerUserAccount(@Valid @ModelAttribute("user") User user, BindingResult bindingResult) {
 
-        if(bindingResult.hasErrors()) {
-            return "auth/register";
+        if (bindingResult.hasErrors()) {
+            return "register-new-user";
         }
 
         userService.registerNewUser(user.getUsername(), user.getPassword());
         return "redirect:/login";
-    }
-
-    private void isLoggedIn(Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getPrincipal())) {
-            UserDTO userDTO = userService.findByUsername(auth.getName());
-            model.addAttribute("loggedUserId", userDTO.getId());
-        } else {
-            model.addAttribute("loggedUserId", null);
-        }
     }
 }

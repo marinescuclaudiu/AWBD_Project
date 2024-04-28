@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Cart</title>
@@ -48,25 +48,13 @@
             </ul>
 
             <ul class="navbar-nav ms-auto">
-                <li sec:authorize="hasRole('ADMIN')" class="nav-item">
-                    <a class="nav-link btn-primary" th:href="@{'/show-users'}">
-                        <i class="fa-solid fa-users"></i> Users
-                    </a>
-                </li>
-
-                <li th:if="${loggedUserId != null}">
-                    <a class="nav-link btn-primary" th:href="@{'/users/profile/' + ${loggedUserId}}">
-                        <i class="fa-solid fa-address-card"></i> Profile
-                    </a>
-                </li>
-
                 <li>
                     <a class="nav-link" th:href="@{'/cart'}">
                         <i class="fa-solid fa-cart-shopping"></i> Cart
                     </a>
                 </li>
 
-                <li th:if="${loggedUserId != null}" class="nav-item">
+                <li class="nav-item">
                     <form id="logout-form" th:action="@{/logout}" method="post">
                         <button type="submit" class="nav-link btn-primary">
                             <i class="fas fa-sign-out-alt"></i> Logout

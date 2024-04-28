@@ -4,7 +4,6 @@ import com.awbd.ecommerce.dto.UserDTO;
 import com.awbd.ecommerce.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,15 +34,14 @@ public class MainController {
             model.addAttribute("username", null);
         }
 
-        return new ModelAndView("/auth/main");
+        return new ModelAndView("main");
     }
 
     @GetMapping("/login")
     public String showLogInForm() {
-        return "/auth/login";
+        return "login";
     }
 
     @GetMapping("/access_denied")
-    public String accessDeniedPage(){ return "/exceptions/access-denied"; }
-
+    public String accessDeniedPage(){ return "accessDenied"; }
 }
