@@ -35,4 +35,10 @@ public class ReviewDTO {
     public ReviewDTO(){
         this.date = LocalDate.now();
     }
+
+    public ReviewDTO(Long id, double rating, String content) {
+        this.id = id;
+        this.rating = rating;
+        this.content = content;
+    }
 }

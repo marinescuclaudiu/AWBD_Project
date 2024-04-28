@@ -28,4 +28,11 @@ public class UserProfileDTO {
 
     @Size(min = 10, max = 10, message = "Phone number must be 10 digits long")
     private String phoneNumber;
+
+    public UserProfileDTO(Long userId) {
+        this.userId = userId;
+        this.firstName = "No first name";
+        this.lastName = "No last name";
+        this.phoneNumber = "No phone number";
+    }
 }

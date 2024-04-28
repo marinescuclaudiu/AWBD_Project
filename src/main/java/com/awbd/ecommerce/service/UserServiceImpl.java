@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService{
         }
 
         log.info("User with id {} found", user.get().getId());
-        return modelMapper.map(user, UserDTO.class);
+        return modelMapper.map(user.get(), UserDTO.class);
     }
 
     @Transactional
@@ -107,10 +107,13 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserDTO findByUsername(String username) {
-        User userFound = userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User with username " + username + " not found!"));
+        Optional<User> user = userRepository.findByUsername(username);
 
-        return modelMapper.map(userFound, UserDTO.class);
+        if(user.isEmpty()){
+            throw new ResourceNotFoundException("User with username " + username + " not found!");
+        }
+
+        return modelMapper.map(user.get(), UserDTO.class);
     }
 
     @Override

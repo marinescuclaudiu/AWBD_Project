@@ -1,5 +1,6 @@
 package com.awbd.ecommerce.model;
 
+import com.awbd.ecommerce.dto.ReviewDTO;
 import com.awbd.ecommerce.model.security.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -7,6 +8,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 @Data
+@NoArgsConstructor
 @Entity
 @Table(name = "review")
 public class Review {
@@ -30,4 +32,10 @@ public class Review {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+
+    public Review(Long id, double rating, String content) {
+        this.id = id;
+        this.rating = rating;
+        this.content = content;
+    }
 }

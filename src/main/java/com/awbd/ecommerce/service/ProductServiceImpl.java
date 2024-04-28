@@ -65,7 +65,7 @@ public class ProductServiceImpl implements ProductService {
         return modelMapper.map(product.get(), ProductDTO.class);
     }
 
-    //    @Transactional
+    @Transactional
     @Override
     public void deleteById(Long id) {
         log.info("Deleting product by ID: {}", id);
@@ -117,11 +117,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public double getAverageRatingByProductId(Long id) {
-        productRepository.findById(id)
+        Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found!"));
-
-        // check if the product has reviews
-        Product product = productRepository.findById(id).get();
 
         if (product.getReviews().isEmpty()) {
             return 0;
@@ -129,6 +126,7 @@ public class ProductServiceImpl implements ProductService {
 
         return (double) Math.round(productRepository.getAverageRatingByProductId(id) * 100) / 100;
     }
+
 
     @Override
     public void savePhotoFile(ProductDTO productDTO, MultipartFile file) {

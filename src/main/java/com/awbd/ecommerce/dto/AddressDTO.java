@@ -28,4 +28,8 @@ public class AddressDTO {
 
     @NotBlank(message = "District is required")
     private String district;
+
+    public AddressDTO(Long id) {
+        this.id = id;
+    }
 }
