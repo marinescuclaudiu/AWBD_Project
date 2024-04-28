@@ -63,25 +63,13 @@
             </ul>
 
             <ul class="navbar-nav ms-auto">
-                <li sec:authorize="hasRole('ADMIN')" class="nav-item">
-                    <a class="nav-link btn-primary" th:href="@{'/show-users'}">
-                        <i class="fa-solid fa-users"></i> Users
-                    </a>
-                </li>
-
-                <li th:if="${loggedUserId != null}">
-                    <a class="nav-link btn-primary" th:href="@{'/users/profile/' + ${loggedUserId}}">
-                        <i class="fa-solid fa-address-card"></i> Profile
-                    </a>
-                </li>
-
                 <li>
                     <a class="nav-link" th:href="@{'/cart'}">
                         <i class="fa-solid fa-cart-shopping"></i> Cart
                     </a>
                 </li>
 
-                <li th:if="${loggedUserId != null}" class="nav-item">
+                <li class="nav-item">
                     <form id="logout-form" th:action="@{/logout}" method="post">
                         <button type="submit" class="nav-link btn-primary">
                             <i class="fas fa-sign-out-alt"></i> Logout
@@ -171,14 +159,14 @@
 
             <!--            Previous-->
             <li class="page-item" th:if="${productPage.number > 0 && category != null}">
-                <a th:href="@{/products(size=${productPage.size}, page=${productPage.number},category=${category})}"
+                <a th:href="@{/templates/products(size=${productPage.size}, page=${productPage.number},category=${category})}"
                    class="page-link">
                     Previous
                 </a>
             </li>
 
             <li class="page-item" th:if="${productPage.number > 0 && category == null}">
-                <a th:href="@{/products(size=${productPage.size}, page=${productPage.number})}"
+                <a th:href="@{/templates/products(size=${productPage.size}, page=${productPage.number})}"
                    class="page-link">
                     Previous
                 </a>
@@ -191,14 +179,14 @@
                 <a class="page-link"
                    th:if="${category == null}"
                    th:text="${pageNumber}"
-                   th:href="@{/products(size=${productPage.size}, page=${pageNumber})}">
+                   th:href="@{/templates/products(size=${productPage.size}, page=${pageNumber})}">
                     1
                 </a>
 
                 <a class="page-link"
                    th:if="${category != null}"
                    th:text="${pageNumber}"
-                   th:href="@{/products(size=${productPage.size}, page=${pageNumber}, category=${category})}">
+                   th:href="@{/templates/products(size=${productPage.size}, page=${pageNumber}, category=${category})}">
                     1
                 </a>
             </li>
@@ -214,7 +202,7 @@
             <!--            Next-->
             <li th:if="${productPage.number < productPage.totalPages && category != null}" class="page-item">
                 <a th:if="${productPage.number < productPage.totalPages}"
-                   th:href="@{/products(size=${productPage.size},page=${productPage.number+2},category=${category})}"
+                   th:href="@{/templates/products(size=${productPage.size},page=${productPage.number+2},category=${category})}"
                    class="page-link">
                     Next
                 </a>
@@ -222,7 +210,7 @@
 
             <li th:if="${productPage.number < productPage.totalPages && category == null}" class="page-item">
                 <a th:if="${productPage.number < productPage.totalPages}"
-                   th:href="@{/products(size=${productPage.size},page=${productPage.number+2})}"
+                   th:href="@{/templates/products(size=${productPage.size},page=${productPage.number+2})}"
                    class="page-link">
                     Next
                 </a>

@@ -19,6 +19,8 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <label th:for="exception">Error</label>
+                                <p th:text="${exception.toString()}">Error</p>
+                                <p th:text="${exception.getCause()}">Error</p>
                                 <p th:text="${exception.getClass()}">Error</p>
                             </div>
                             <div class="col-md-6">

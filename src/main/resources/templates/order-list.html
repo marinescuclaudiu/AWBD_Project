@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Order Page</title>
+    <title>Orders</title>
 
     <script src="/webjars/jquery/3.6.0/jquery.min.js"></script>
     <script src="/webjars/bootstrap/5.3.2/js/bootstrap.min.js"></script>
@@ -47,25 +47,13 @@
             </ul>
 
             <ul class="navbar-nav ms-auto">
-                <li sec:authorize="hasRole('ADMIN')" class="nav-item">
-                    <a class="nav-link btn-primary" th:href="@{'/show-users'}">
-                        <i class="fa-solid fa-users"></i> Users
-                    </a>
-                </li>
-
-                <li th:if="${loggedUserId != null}">
-                    <a class="nav-link btn-primary" th:href="@{'/users/profile/' + ${loggedUserId}}">
-                        <i class="fa-solid fa-address-card"></i> Profile
-                    </a>
-                </li>
-
                 <li>
                     <a class="nav-link" th:href="@{'/cart'}">
                         <i class="fa-solid fa-cart-shopping"></i> Cart
                     </a>
                 </li>
 
-                <li th:if="${loggedUserId != null}" class="nav-item">
+                <li class="nav-item">
                     <form id="logout-form" th:action="@{/logout}" method="post">
                         <button type="submit" class="nav-link btn-primary">
                             <i class="fas fa-sign-out-alt"></i> Logout
@@ -77,30 +65,40 @@
     </div>
 </nav>
 
-
 <div class="container">
-    <h2 th:text="'Details about the order with id #' + ${order.id}">
-        Details about the order with id #1
-    </h2>
+    <h2>List of orders</h2>
 
-    <hr />
+    <hr/>
 
-    <div class="card col-6">
-        <div class="card-header">
-            Order Details
-        </div>
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item" th:text="'ID: ' + ${order.id}">1</li>
-            <li class="list-group-item" th:text="'Total amount: ' + ${order.totalAmount} + '€'">100€</li>
-            <li class="list-group-item" th:text="'Date: ' + ${order.orderDate}">2024-01-01</li>
-            <li class="list-group-item" th:text="'Payment method: ' + ${order.paymentMethod}"> CREDIT CARD</li>
-<!--            <li class="list-group-item"-->
-<!--                th:text="'Address: Str. ' + ${address.street} + ', '  + ${address.city} + ', ' + ${address.district} + ', ' + ${address.zipCode} + ', ' + ${address.country}"-->
-<!--            >-->
-<!--                Str. Unirii, Bucuresti, Sectorul 3, 012345, Romania-->
-<!--            </li>-->
-        </ul>
-    </div>
+    <table class="table table-responsive table-hover">
+        <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>User ID</th>
+            <th>Total Amount</th>
+            <th>Order Date</th>
+            <th>Payment Method</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+
+        <tr th:each="order, stat : ${orders}">
+            <td th:text="${order.id}">1</td>
+            <td th:text="${order.userId}">1</td>
+            <td th:text="${order.totalAmount}">1</td>
+            <td th:text="${order.orderDate}">1</td>
+            <td th:text="${order.paymentMethod}">1</td>
+            <td>
+                <a th:href="@{'/orders/' + ${order.id}}"
+                   style="color: inherit; text-decoration: inherit"
+                   class="btn btn-outline-primary btn-sm mb-3"
+                >
+                    Show more info
+                </a>
+            </td>
+        </tr>
+
+    </table>
 
 </div>
 

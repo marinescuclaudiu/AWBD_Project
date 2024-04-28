@@ -17,30 +17,30 @@ public class GlobalExceptionHandler {
         return modelAndView;
     }
 
-    @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler(EmailAlreadyExistsException.class)
-    public ModelAndView EmailAlreadyExistsException(Exception exception){
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.getModel().put("exception", exception);
-        modelAndView.setViewName("emailAlreadyExistsException");
-        return modelAndView;
-    }
-
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler(AuthenticationFailedException.class)
-    public ModelAndView handlerAuthenticationFailedException(Exception exception){
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.getModel().put("exception", exception);
-        modelAndView.setViewName("authenticationFailedException");
-        return modelAndView;
-    }
-
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(DatabaseErrorException.class)
-    public ModelAndView handlerDatabaseErrorException(Exception exception){
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.getModel().put("exception", exception);
-        modelAndView.setViewName("databaseErrorException");
-        return modelAndView;
-    }
+//    @ResponseStatus(HttpStatus.CONFLICT)
+//    @ExceptionHandler(EmailAlreadyExistsException.class)
+//    public ModelAndView EmailAlreadyExistsException(Exception exception){
+//        ModelAndView modelAndView = new ModelAndView();
+//        modelAndView.getModel().put("exception", exception);
+//        modelAndView.setViewName("defaultException");
+//        return modelAndView;
+//    }
+//
+//    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+//    @ExceptionHandler(AuthenticationFailedException.class)
+//    public ModelAndView handlerAuthenticationFailedException(Exception exception){
+//        ModelAndView modelAndView = new ModelAndView();
+//        modelAndView.getModel().put("exception", exception);
+//        modelAndView.setViewName("defaultException");
+//        return modelAndView;
+//    }
+//
+//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//    @ExceptionHandler(DatabaseErrorException.class)
+//    public ModelAndView handlerDatabaseErrorException(Exception exception){
+//        ModelAndView modelAndView = new ModelAndView();
+//        modelAndView.getModel().put("exception", exception);
+//        modelAndView.setViewName("defaultException");
+//        return modelAndView;
+//    }
 }

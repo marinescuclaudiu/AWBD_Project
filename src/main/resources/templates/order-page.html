@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Category Form</title>
+    <title>Order Page</title>
 
     <script src="/webjars/jquery/3.6.0/jquery.min.js"></script>
     <script src="/webjars/bootstrap/5.3.2/js/bootstrap.min.js"></script>
@@ -11,7 +11,6 @@
 </head>
 <body>
 
-<!--Navigation-->
 <nav class="navbar navbar-expand-lg navbar-light mb-3" style="background-color: #e3f2fd;">
     <div class="container">
         <a class="navbar-brand" href="#" th:href="@{'/'}">
@@ -48,25 +47,13 @@
             </ul>
 
             <ul class="navbar-nav ms-auto">
-                <li sec:authorize="hasRole('ADMIN')" class="nav-item">
-                    <a class="nav-link btn-primary" th:href="@{'/show-users'}">
-                        <i class="fa-solid fa-users"></i> Users
-                    </a>
-                </li>
-
-                <li th:if="${loggedUserId != null}">
-                    <a class="nav-link btn-primary" th:href="@{'/users/profile/' + ${loggedUserId}}">
-                        <i class="fa-solid fa-address-card"></i> Profile
-                    </a>
-                </li>
-
                 <li>
                     <a class="nav-link" th:href="@{'/cart'}">
                         <i class="fa-solid fa-cart-shopping"></i> Cart
                     </a>
                 </li>
 
-                <li th:if="${loggedUserId != null}" class="nav-item">
+                <li class="nav-item">
                     <form id="logout-form" th:action="@{/logout}" method="post">
                         <button type="submit" class="nav-link btn-primary">
                             <i class="fas fa-sign-out-alt"></i> Logout
@@ -77,37 +64,32 @@
         </div>
     </div>
 </nav>
-<!--Navigation-->
+
 
 <div class="container">
+    <h2 th:text="'Details about the order with id #' + ${order.id}">
+        Details about the order with id #1
+    </h2>
 
-    <h2>Form for adding or updating a category</h2>
+    <hr />
 
-    <hr/>
-
-    <form enctype="multipart/form-data" method="post" th:object="${category}" th:action="@{/categories}"
-          class="mb-lg-5">
-        <input th:field="*{id}" type="hidden"/>
-
-        <div>
-            <label for="name">Name</label>
-            <input
-                    type="text"
-                    id="name"
-                    th:field="*{name}"
-                    placeholder="Type a short name"
-                    class="form-control mb-4 w-25"
-            />
-            <p th:errors="*{name}" class="text-danger"
-               th:if="${#fields.hasErrors('name')}"></p>
+    <div class="card col-6">
+        <div class="card-header">
+            Order Details
         </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item" th:text="'ID: ' + ${order.id}">1</li>
+            <li class="list-group-item" th:text="'Total amount: ' + ${order.totalAmount} + '€'">100€</li>
+            <li class="list-group-item" th:text="'Date: ' + ${order.orderDate}">2024-01-01</li>
+            <li class="list-group-item" th:text="'Payment method: ' + ${order.paymentMethod}"> CREDIT CARD</li>
+<!--            <li class="list-group-item"-->
+<!--                th:text="'Address: Str. ' + ${address.street} + ', '  + ${address.city} + ', ' + ${address.district} + ', ' + ${address.zipCode} + ', ' + ${address.country}"-->
+<!--            >-->
+<!--                Str. Unirii, Bucuresti, Sectorul 3, 012345, Romania-->
+<!--            </li>-->
+        </ul>
+    </div>
 
-        <!--Submit button-->
-        <div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </div>
-        <!--Submit button-->
-    </form>
 </div>
 
 </body>
