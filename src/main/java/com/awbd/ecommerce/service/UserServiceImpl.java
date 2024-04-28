@@ -107,18 +107,24 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserDTO findByUsername(String username) {
+        log.info("Fetching user by username: {}", username);
         Optional<User> user = userRepository.findByUsername(username);
 
         if(user.isEmpty()){
+            log.error("User with username {} not found!", username);
             throw new ResourceNotFoundException("User with username " + username + " not found!");
         }
 
+        log.info("User with username {} found", username);
         return modelMapper.map(user.get(), UserDTO.class);
     }
 
     @Override
     public void registerNewUser(String username, String password) {
+        log.info("Creating new user with username: {}", username);
+
         if (userRepository.findByUsername(username).isPresent()) {
+            log.error("User with username {} already exist", username);
             throw new RuntimeException("Username already exists");
         }
         Authority guestRole = authorityRepository.findByRole("ROLE_GUEST");
@@ -137,6 +143,8 @@ public class UserServiceImpl implements UserService{
                 .build();
 
         userProfile.setUser(newUser);
+
+        log.info("User with username: {} created successfully", username);
         userRepository.save(newUser);
     }
 

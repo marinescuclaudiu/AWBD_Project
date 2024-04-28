@@ -1,6 +1,5 @@
 package com.awbd.ecommerce.service;
 
-import com.awbd.ecommerce.dto.UserDTO;
 import com.awbd.ecommerce.dto.UserProfileDTO;
 import com.awbd.ecommerce.exception.ResourceNotFoundException;
 import com.awbd.ecommerce.helper.BeanHelper;
@@ -109,9 +108,11 @@ public class UserProfileServiceImpl implements UserProfileService{
 
     @Override
     public UserProfileDTO findByUserId(Long userId) {
+        log.info("Fetching user profile by user ID: {}", userId);
         Optional<User> userOptional = userRepository.findById(userId);
 
         if(userOptional.isEmpty()) {
+            log.error("User with id {} not found", userId);
             throw new ResourceNotFoundException("User with id " + userId + " not found!");
         }
 
@@ -125,18 +126,7 @@ public class UserProfileServiceImpl implements UserProfileService{
             userProfile.setPhoneNumber("No phone number");
         }
 
+        log.info("User profile with user ID {} found", userId);
         return modelMapper.map(userProfile, UserProfileDTO.class);
-    }
-
-    @Override
-    public UserDTO findUserByProfileId(Long profileId) {
-        Optional<UserProfile> userProfile = userProfileRepository.findById(profileId);
-
-        if(userProfile.isEmpty()) {
-            throw new ResourceNotFoundException("Profile with id " + profileId + " not found!");
-        }
-
-        User user = userProfile.get().getUser();
-        return modelMapper.map(user, UserDTO.class);
     }
 }

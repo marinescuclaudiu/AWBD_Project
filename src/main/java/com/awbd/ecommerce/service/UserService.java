@@ -10,10 +10,7 @@ public interface UserService {
     UserDTO findById(Long id);
     void deleteById(Long id);
     UserDTO update(Long id, UserDTO userDTO);
-
     UserDTO findByUsername(String username);
-
     void registerNewUser(String username, String password);
-
     String findRoleOfUserByUserId(Long userId);
 }

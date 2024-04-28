@@ -5,7 +5,6 @@ import com.awbd.ecommerce.dto.ProductDTO;
 import com.awbd.ecommerce.model.Product;
 import com.awbd.ecommerce.service.CategoryService;
 import com.awbd.ecommerce.service.ProductService;
-import com.awbd.ecommerce.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.apache.tomcat.util.http.fileupload.IOUtils;

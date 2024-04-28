@@ -117,14 +117,23 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public double getAverageRatingByProductId(Long id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found!"));
+        log.info("Calculating average rating for product with id: {}", id);
 
-        if (product.getReviews().isEmpty()) {
+        Optional<Product> product = productRepository.findById(id);
+
+        if(product.isEmpty()){
+            log.error("Product with id {} not found", id);
+            throw new ResourceNotFoundException("Product with id " + id + " not found!");
+        }
+
+        if (product.get().getReviews().isEmpty()) {
             return 0;
         }
 
-        return (double) Math.round(productRepository.getAverageRatingByProductId(id) * 100) / 100;
+        double avg = (double) Math.round(productRepository.getAverageRatingByProductId(id) * 100) / 100;
+
+        log.info("Average rating for product with id: {}", avg);
+        return avg;
     }
 
 

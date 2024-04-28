@@ -1,6 +1,5 @@
 package com.awbd.ecommerce.model;
 
-import com.awbd.ecommerce.dto.ReviewDTO;
 import com.awbd.ecommerce.model.security.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;

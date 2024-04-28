@@ -5,9 +5,7 @@ import com.awbd.ecommerce.model.Review;
 import com.awbd.ecommerce.model.UserProfile;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.List;

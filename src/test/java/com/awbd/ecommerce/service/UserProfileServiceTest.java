@@ -245,38 +245,4 @@ public class UserProfileServiceTest {
         assertThrows(ResourceNotFoundException.class, () -> userProfileService.findByUserId(nonExistingUserId));
         verify(userRepository).findById(nonExistingUserId);
     }
-
-    @Test
-    void findUserByProfileId_Success() {
-        // Arrange
-        long profileId = 1L;
-        UserProfile userProfile = new UserProfile();
-        User user = new User();
-        user.setId(1L);
-        userProfile.setUser(user);
-
-        when(userProfileRepository.findById(profileId)).thenReturn(Optional.of(userProfile));
-
-        UserDTO expectedUserDTO = new UserDTO();
-        expectedUserDTO.setId(user.getId());
-        when(modelMapper.map(user, UserDTO.class)).thenReturn(expectedUserDTO);
-
-        // Act
-        UserDTO result = userProfileService.findUserByProfileId(profileId);
-
-        // Assert
-        verify(userProfileRepository).findById(profileId);
-        assertEquals(expectedUserDTO.getId(), result.getId());
-    }
-
-    @Test
-    void findUserByProfileId_UserProfileNotFound() {
-        // Arrange
-        long nonExistingProfileId = 999L;
-        when(userProfileRepository.findById(nonExistingProfileId)).thenReturn(Optional.empty());
-
-        // Act and Assert
-        assertThrows(ResourceNotFoundException.class, () -> userProfileService.findUserByProfileId(nonExistingProfileId));
-        verify(userProfileRepository).findById(nonExistingProfileId);
-    }
 }
