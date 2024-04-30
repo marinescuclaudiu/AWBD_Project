@@ -1,48 +1,38 @@
 package com.awbd.ecommerce.controller;
 
-import com.awbd.ecommerce.config.SecurityJpaConfig;
 import com.awbd.ecommerce.dto.CategoryDTO;
 import com.awbd.ecommerce.exception.ResourceNotFoundException;
 import com.awbd.ecommerce.service.CategoryService;
 import com.awbd.ecommerce.service.ProductService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Profile;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(CategoryController.class)
+@SpringBootTest
 @AutoConfigureMockMvc
-@Profile("mysql")
-@Import(SecurityJpaConfig.class)
+@ActiveProfiles("mysql")
 public class CategoryControllerTest {
-    MockMvc mockMvc;
-
     @Autowired
-    private WebApplicationContext webApplicationContext;
-
-    @BeforeEach
-    void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-    }
+    MockMvc mockMvc;
 
     @MockBean
     CategoryService categoryService;
@@ -59,16 +49,13 @@ public class CategoryControllerTest {
     @Test
     @WithMockUser(username = "guest", password = "12345", roles = "GUEST")
     public void findAll() throws Exception {
-        // arrange
         CategoryDTO category1 = new CategoryDTO(); category1.setName("category1");
         CategoryDTO category2 = new CategoryDTO(); category2.setName("category2");
 
         List<CategoryDTO> categories = Arrays.asList(category1, category2);
 
-        // act
         when(categoryService.findAll()).thenReturn(categories);
 
-        // assert
         mockMvc.perform(get("/categories"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("category-list"))
@@ -81,15 +68,12 @@ public class CategoryControllerTest {
     @Test
     @WithMockUser(username = "guest", password = "12345", roles = "GUEST")
     public void findById() throws Exception {
-        // arrange
         Long categoryId = 1L;
         CategoryDTO categoryDTO = new CategoryDTO();
         categoryDTO.setId(categoryId);
 
-        // act
         when(categoryService.findById(categoryId)).thenReturn(categoryDTO);
 
-        // assert
         mockMvc.perform(get("/categories/{id}", categoryId))
                 .andExpect(status().isOk())
                 .andExpect(view().name("category-details"))
@@ -111,14 +95,14 @@ public class CategoryControllerTest {
     @Test
     @WithMockUser(username = "guest", password = "12345", roles = "GUEST")
     public void findById_notFoundException() throws Exception {
-        // arrange & act
         Long id = -1L;
-        when(categoryService.findById(id)).thenThrow(new ResourceNotFoundException("Category with " + id + " not found!"));
 
-        // assert
+        when(categoryService.findById(id)).thenThrow(new ResourceNotFoundException("Category not found"));
+
         mockMvc.perform(get("/categories/{id}", id))
                 .andExpect(status().isOk())
-                .andExpect(view().name("notFoundException"));
+                .andExpect(view().name("notFoundException"))
+                .andExpect(model().attributeExists("exception"));
 
         verify(categoryService, times(1)).findById(id);
     }
@@ -127,9 +111,7 @@ public class CategoryControllerTest {
     @WithMockUser(username = "guest", password = "12345", roles = "GUEST")
     public void showCategoryFormToUser() throws Exception {
         mockMvc.perform(get("/categories/form"))
-                .andExpect(status().isForbidden())
-                .andExpect(redirectedUrl("/access_denied"))
-                .andExpect(view().name("accessDenied"));
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -142,14 +124,17 @@ public class CategoryControllerTest {
 
     @Test
     @WithMockUser(username = "admin", password = "12345", roles = "ADMIN")
-    public void testSaveOrUpdate_WithValidCategory_ShouldSaveProduct() throws Exception {
+    public void testSaveOrUpdate_WithValidCategory_ShouldSaveCategory() throws Exception {
         CategoryDTO categoryDTO = new CategoryDTO();
-        categoryDTO.setName("Electronics");
+        categoryDTO.setName("Test Category");
 
         when(bindingResult.hasErrors()).thenReturn(false);
 
-        mockMvc.perform(post("/categories")
-                        .flashAttr("category", categoryDTO))
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/categories")
+                        .with(csrf())
+                        .param("name", "Test Category")
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .accept(MediaType.TEXT_HTML))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/categories"));
 

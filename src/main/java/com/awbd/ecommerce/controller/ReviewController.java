@@ -9,7 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @Controller
 public class ReviewController {
@@ -20,13 +19,6 @@ public class ReviewController {
     public ReviewController(ReviewService reviewService, ProductService productService) {
         this.reviewService = reviewService;
         this.productService = productService;
-    }
-
-    @GetMapping("/reviews")
-    public String findAll(Model model) {
-        List<ReviewDTO> reviews = reviewService.findAll();
-        model.addAttribute("reviews", reviews);
-        return "review-form";
     }
 
     @RequestMapping("/products/{productId}/reviewForm")
@@ -45,8 +37,8 @@ public class ReviewController {
     }
 
     @RequestMapping("/reviews/edit/{reviewId}")
-    public String editReviewForm(@PathVariable Long reviewId, Model model) {
-        ReviewDTO reviewDTO = reviewService.findById(reviewId);
+    public String editReviewForm(@PathVariable String reviewId, Model model) {
+        ReviewDTO reviewDTO = reviewService.findById(Long.valueOf(reviewId));
         ProductDTO productDTO = productService.findById(reviewDTO.getProductId());
 
         model.addAttribute("product", productDTO);
@@ -63,11 +55,11 @@ public class ReviewController {
     }
 
     @RequestMapping("/reviews/delete/{id}")
-    public String deleteById(@PathVariable Long id, Model model) {
+    public String deleteById(@PathVariable String id, Model model) {
         try {
-            Long productId = reviewService.findById(id).getProductId();
+            Long productId = reviewService.findById(Long.valueOf(id)).getProductId();
 
-            reviewService.deleteById(id);
+            reviewService.deleteById(Long.valueOf(id));
             return "redirect:/products/" + productId;
         } catch (ResourceNotFoundException exception) {
             model.addAttribute("exception", exception);
