@@ -54,16 +54,16 @@ public class ProductController {
     }
 
     @RequestMapping("/{id}")
-    public String findById(@PathVariable Long id, Model model) {
+    public String findById(@PathVariable String id, Model model) {
         try {
-            ProductDTO productDTO = productService.findById(id);
+            ProductDTO productDTO = productService.findById(Long.valueOf(id));
             model.addAttribute("product", productDTO);
 
             // count the number of reviews of this product
             int numberOfReviews = productDTO.getReviews().size();
             model.addAttribute("numberOfReviews", numberOfReviews);
 
-            double averageRating = productService.getAverageRatingByProductId(id);
+            double averageRating = productService.getAverageRatingByProductId(Long.valueOf(id));
             model.addAttribute("averageRating", averageRating);
 
             return "product-details";
@@ -74,9 +74,14 @@ public class ProductController {
     }
 
     @RequestMapping("/delete/{id}")
-    public String deleteById(@PathVariable Long id) {
-        productService.deleteById(id);
-        return "redirect:/products";
+    public String deleteById(@PathVariable Long id, Model model) {
+        try {
+            productService.deleteById(id);
+            return "redirect:/products";
+        } catch (ResourceAccessException exception) {
+            model.addAttribute("exception", exception);
+            return("notFoundException");
+        }
     }
 
     @RequestMapping("/form")

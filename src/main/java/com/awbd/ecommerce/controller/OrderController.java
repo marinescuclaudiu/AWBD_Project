@@ -99,7 +99,6 @@ public class OrderController {
         return "cart";
     }
 
-
     @PostMapping("/placeOrder")
     public String placeOrder(@Valid @ModelAttribute("addressForm") Address addressForm, String paymentMethod, HttpSession session, Model model) {
         Map<Long, Integer> cart = (Map<Long, Integer>) session.getAttribute("cart");
