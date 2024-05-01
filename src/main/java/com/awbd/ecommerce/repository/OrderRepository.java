@@ -13,6 +13,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("SELECT o.address FROM Order o WHERE o.id = :orderId")
     AddressDTO findAddressByOrderId(Long orderId);
 
-    @Query("SELECT o FROM Order o WHERE o.user.id =: userId")
+    @Query("SELECT o FROM Order o WHERE o.user.id = :userId")
     List<Order> findAllByUserId(Long userId);
 }

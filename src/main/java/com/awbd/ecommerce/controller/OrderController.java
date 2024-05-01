@@ -54,10 +54,9 @@ public class OrderController {
 
         List<OrderDTO> orders;
 
-        if(Objects.equals(userDTO.getUsername(), "admin")){
+        if (Objects.equals(userDTO.getUsername(), "admin")) {
             orders = orderService.findAll();
-        }
-        else {
+        } else {
             orders = orderService.findAllByUserId(userId);
         }
 

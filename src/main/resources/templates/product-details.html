@@ -114,14 +114,6 @@
                     <p class="font-weight-bold" th:text="'Current price: ' + ${product.price} + '€'">
                         180€
                     </p>
-
-                    <form th:action="@{/card/add}" method="post">
-                        <input type="hidden" th:name="productId" th:value="${product.id}" />
-                        <button class="btn btn-outline-primary btn-sm mb-3" type="submit">
-                            Add to Cart
-                        </button>
-                    </form>
-
                 </div>
             </div>
         </div>
