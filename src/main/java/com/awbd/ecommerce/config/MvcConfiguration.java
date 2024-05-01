@@ -17,7 +17,7 @@ public class MvcConfiguration implements WebMvcConfigurer {
                 new SimpleMappingExceptionResolver();
 
         r.setDefaultErrorView("defaultException");
-        r.setExceptionAttribute("ex");     // default "exception"
+        r.setExceptionAttribute("ex");
 
         Properties mappings = new Properties();
         mappings.setProperty("NumberFormatException", "numberFormatException");

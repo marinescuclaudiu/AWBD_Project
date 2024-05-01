@@ -27,7 +27,6 @@ import java.util.Optional;
 @RequestMapping("/products")
 public class ProductController {
     ProductService productService;
-
     CategoryService categoryService;
 
     public ProductController(ProductService productService, CategoryService categoryService) {
