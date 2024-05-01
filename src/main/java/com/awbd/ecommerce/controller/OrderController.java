@@ -47,7 +47,20 @@ public class OrderController {
 
     @GetMapping("/orders")
     public String findAll(Model model) {
-        List<OrderDTO> orders = orderService.findAll();
+
+        long userId = getCurrentUserId();
+
+        UserDTO userDTO = userService.findById(userId);
+
+        List<OrderDTO> orders;
+
+        if(Objects.equals(userDTO.getUsername(), "admin")){
+            orders = orderService.findAll();
+        }
+        else {
+            orders = orderService.findAllByUserId(userId);
+        }
+
         model.addAttribute("orders", orders);
 
         return "order-list";

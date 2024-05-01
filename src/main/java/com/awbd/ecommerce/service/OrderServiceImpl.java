@@ -118,6 +118,22 @@ public class OrderServiceImpl implements OrderService{
                 .collect(Collectors.toList());
     }
 
+    public List<OrderDTO> findAllByUserId(Long userId){
+        log.info("Fetching all orders for user with id: {}", userId);
+
+        if(!userRepository.existsById(userId)){
+            log.error("User with id {} not found!", userId);
+            throw new ResourceNotFoundException("User with id " + userId + " not found!");
+        }
+
+        List<Order> orders = orderRepository.findAllByUserId(userId);
+
+        log.info("Found {} orders", orders.size());
+        return orders.stream()
+                .map(order -> modelMapper.map(order, OrderDTO.class))
+                .collect(Collectors.toList());
+    }
+
     @Override
     public OrderDTO findById(Long id) {
         log.info("Fetching order by ID: {}", id);

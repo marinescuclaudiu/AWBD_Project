@@ -53,15 +53,23 @@ public class OrderControllerTest {
     Model model;
 
     @Test
-    @WithMockUser(username = "guest", password = "12345", roles = "GUEST")
+    @WithMockUser(username = "admin", password = "12345", roles = "ADMIN")
     public void findAll() throws Exception {
         OrderDTO order1 = new OrderDTO();
         order1.setOrderDate(LocalDate.now());
         OrderDTO order2 = new OrderDTO();
         order2.setOrderDate(LocalDate.now());
 
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(1L);
+
+        order1.setUserId(1L);
+        order2.setUserId(1L);
+
         List<OrderDTO> orders = Arrays.asList(order1, order2);
 
+        when(userService.findByUsername("admin")).thenReturn(userDTO);
+        when(userService.findById(anyLong())).thenReturn(userDTO);
         when(orderService.findAll()).thenReturn(orders);
 
         mockMvc.perform(get("/orders"))
