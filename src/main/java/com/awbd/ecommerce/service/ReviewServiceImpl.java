@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ReviewServiceImpl implements ReviewService {
     ReviewRepository reviewRepository;
-
     ModelMapper modelMapper;
 
     public ReviewServiceImpl(ReviewRepository reviewRepository, ModelMapper modelMapper) {

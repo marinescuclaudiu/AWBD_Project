@@ -141,8 +141,6 @@ public class ProductServiceImpl implements ProductService {
     public void savePhotoFile(ProductDTO productDTO, MultipartFile file) {
         Product product = modelMapper.map(productDTO, Product.class);
         try {
-
-
             byte[] byteObjects = new byte[file.getBytes().length];
             int i = 0;
             for (byte b : file.getBytes()) {
@@ -161,9 +159,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Page<ProductDTO> findPaginated(Pageable pageable, String categoryName) {
         if (categoryName == null) {
-            System.out.println("-------------------");
-            System.out.println("in null branch");
-
             List<ProductDTO> dtoList = productRepository
                     .findAll()
                     .stream()

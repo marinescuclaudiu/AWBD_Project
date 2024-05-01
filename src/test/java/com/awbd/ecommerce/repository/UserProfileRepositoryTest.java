@@ -1,7 +1,5 @@
 package com.awbd.ecommerce.repository;
 
-import com.awbd.ecommerce.model.Order;
-import com.awbd.ecommerce.model.Product;
 import com.awbd.ecommerce.model.UserProfile;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +19,7 @@ public class UserProfileRepositoryTest {
     UserProfileRepository userProfileRepository;
 
     @Test
-    public void testFindAllCategories() {
+    public void testFindAllUserProfiles() {
         List<UserProfile> userProfiles = userProfileRepository.findAll();
         assertNotNull(userProfiles);
         assertTrue(userProfiles.isEmpty());

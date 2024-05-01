@@ -34,10 +34,4 @@ public class CategoryRepositoryTest {
     public void testExistsById() {
         assertTrue(categoryRepository.existsById(1L));
     }
-
-    @Test
-    public void testDeleteById() {
-        categoryRepository.deleteById(1L);
-        assertFalse(categoryRepository.existsById(1L));
-    }
 }

@@ -1,6 +1,5 @@
 package com.awbd.ecommerce.service;
 
-import com.awbd.ecommerce.dto.UserDTO;
 import com.awbd.ecommerce.dto.UserProfileDTO;
 import com.awbd.ecommerce.exception.ResourceNotFoundException;
 import com.awbd.ecommerce.model.UserProfile;
@@ -23,7 +22,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
-
 
 @ExtendWith(MockitoExtension.class)
 public class UserProfileServiceTest {

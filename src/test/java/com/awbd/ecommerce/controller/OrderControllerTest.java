@@ -54,31 +54,48 @@ public class OrderControllerTest {
 
     @Test
     @WithMockUser(username = "admin", password = "12345", roles = "ADMIN")
-    public void findAll() throws Exception {
+    public void findAll_byUser() throws Exception {
         OrderDTO order1 = new OrderDTO();
         order1.setOrderDate(LocalDate.now());
         OrderDTO order2 = new OrderDTO();
         order2.setOrderDate(LocalDate.now());
-
         UserDTO userDTO = new UserDTO();
         userDTO.setId(1L);
-
+        userDTO.setUsername("admin");
         order1.setUserId(1L);
-        order2.setUserId(1L);
-
+        order2.setUserId(2L);
         List<OrderDTO> orders = Arrays.asList(order1, order2);
-
         when(userService.findByUsername("admin")).thenReturn(userDTO);
         when(userService.findById(anyLong())).thenReturn(userDTO);
         when(orderService.findAll()).thenReturn(orders);
-
         mockMvc.perform(get("/orders"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("orders"))
                 .andExpect(model().attribute("orders", orders))
                 .andExpect(view().name("order-list"));
-
         verify(orderService, times(1)).findAll();
+    }
+    @Test
+    @WithMockUser(username = "guest", password = "12345", roles = "GUEST")
+    public void findAll_byGuest() throws Exception {
+        Long userId = 2L;
+        UserDTO guestUserDTO = new UserDTO();
+        guestUserDTO.setId(userId);
+        guestUserDTO.setUsername("guest");
+        List<OrderDTO> guestOrders = List.of(
+                new OrderDTO(),
+                new OrderDTO()
+        );
+        when(userService.findByUsername("guest")).thenReturn(guestUserDTO);
+        when(userService.findById(userId)).thenReturn(guestUserDTO);
+        when(orderService.findAllByUserId(userId)).thenReturn(guestOrders);
+        mockMvc.perform(get("/orders"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("orders"))
+                .andExpect(model().attribute("orders", guestOrders))
+                .andExpect(view().name("order-list"));
+        verify(orderService, never()).findAll();
+        verify(orderService, times(1)).findAllByUserId(userId);
     }
 
     @Test

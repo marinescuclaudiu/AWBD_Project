@@ -1,6 +1,5 @@
 package com.awbd.ecommerce.repository;
 
-import com.awbd.ecommerce.model.Category;
 import com.awbd.ecommerce.model.Review;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

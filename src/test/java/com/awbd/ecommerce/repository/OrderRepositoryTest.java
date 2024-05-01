@@ -1,8 +1,6 @@
 package com.awbd.ecommerce.repository;
 
-import com.awbd.ecommerce.model.Category;
 import com.awbd.ecommerce.model.Order;
-import org.aspectj.weaver.ast.Or;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -20,7 +18,7 @@ public class OrderRepositoryTest {
     OrderRepository orderRepository;
 
     @Test
-    public void testFindAllCategories() {
+    public void testFindAllOrders() {
         List<Order> orders = orderRepository.findAll();
         assertNotNull(orders);
         assertTrue(orders.isEmpty());

@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService{
     UserRepository userRepository;
     ModelMapper modelMapper;
-
     private final PasswordEncoder passwordEncoder;
     private final AuthorityRepository authorityRepository;
 
