@@ -45,7 +45,6 @@ public class OrderController {
             model.addAttribute("exception", exception);
             return "notFoundException";
         }
-
     }
 
     @GetMapping("/orders")

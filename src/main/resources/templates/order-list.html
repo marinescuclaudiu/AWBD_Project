@@ -70,7 +70,12 @@
 
     <hr/>
 
-    <table class="table table-responsive table-hover">
+    <div th:if="${orders.size() == 0}">
+        <p>There are currently no orders yet...</p>
+        <img style="width: 500px" th:src="@{/empty_cart.png}" alt="sleepy bag" />
+    </div>
+
+    <table th:if="${orders.size() > 0}" class="table table-responsive table-hover">
         <thead class="table-dark">
         <tr>
             <th>ID</th>

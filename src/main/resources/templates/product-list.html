@@ -159,14 +159,14 @@
 
             <!--            Previous-->
             <li class="page-item" th:if="${productPage.number > 0 && category != null}">
-                <a th:href="@{/templates/products(size=${productPage.size}, page=${productPage.number},category=${category})}"
+                <a th:href="@{/products(size=${productPage.size}, page=${productPage.number},category=${category})}"
                    class="page-link">
                     Previous
                 </a>
             </li>
 
             <li class="page-item" th:if="${productPage.number > 0 && category == null}">
-                <a th:href="@{/templates/products(size=${productPage.size}, page=${productPage.number})}"
+                <a th:href="@{/products(size=${productPage.size}, page=${productPage.number})}"
                    class="page-link">
                     Previous
                 </a>
@@ -179,14 +179,14 @@
                 <a class="page-link"
                    th:if="${category == null}"
                    th:text="${pageNumber}"
-                   th:href="@{/templates/products(size=${productPage.size}, page=${pageNumber})}">
+                   th:href="@{/products(size=${productPage.size}, page=${pageNumber})}">
                     1
                 </a>
 
                 <a class="page-link"
                    th:if="${category != null}"
                    th:text="${pageNumber}"
-                   th:href="@{/templates/products(size=${productPage.size}, page=${pageNumber}, category=${category})}">
+                   th:href="@{/products(size=${productPage.size}, page=${pageNumber}, category=${category})}">
                     1
                 </a>
             </li>
@@ -202,7 +202,7 @@
             <!--            Next-->
             <li th:if="${productPage.number < productPage.totalPages && category != null}" class="page-item">
                 <a th:if="${productPage.number < productPage.totalPages}"
-                   th:href="@{/templates/products(size=${productPage.size},page=${productPage.number+2},category=${category})}"
+                   th:href="@{/products(size=${productPage.size},page=${productPage.number+2},category=${category})}"
                    class="page-link">
                     Next
                 </a>
@@ -210,7 +210,7 @@
 
             <li th:if="${productPage.number < productPage.totalPages && category == null}" class="page-item">
                 <a th:if="${productPage.number < productPage.totalPages}"
-                   th:href="@{/templates/products(size=${productPage.size},page=${productPage.number+2})}"
+                   th:href="@{/products(size=${productPage.size},page=${productPage.number+2})}"
                    class="page-link">
                     Next
                 </a>
