@@ -1,11 +1,5 @@
-What to do next:
-- testing
-    - repository ---> Claudiu
-    - service ---> Claudiu
-    - controller --> Flavia
-
-
 ## Requirements
+
 1. Vor fi create relații între entități de toate tipurile: 
    - @OneToOne ✅
    - @OneToMany ✅
