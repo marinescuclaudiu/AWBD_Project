@@ -8,12 +8,15 @@ import com.awbd.ecommerce.service.UserProfileService;
 import com.awbd.ecommerce.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 public class UserController {
@@ -28,6 +31,14 @@ public class UserController {
 
     @RequestMapping("/users/profile/{id}")
     public String findById(@PathVariable Long id, Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        UserDTO currentLoggedUser = userService.findByUsername(username);
+
+        if (!Objects.equals(currentLoggedUser.getId(), id)) {
+            return "accessDenied";
+        }
+
         try {
             UserDTO userDTO = userService.findById(id);
             String role = userService.findRoleOfUserByUserId(id);

@@ -2,7 +2,6 @@ package com.awbd.ecommerce.controller;
 
 import com.awbd.ecommerce.dto.ProductDTO;
 import com.awbd.ecommerce.dto.ReviewDTO;
-import com.awbd.ecommerce.model.Review;
 import com.awbd.ecommerce.service.ProductService;
 import com.awbd.ecommerce.service.ReviewService;
 import org.junit.jupiter.api.Test;
@@ -14,12 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.ui.Model;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;

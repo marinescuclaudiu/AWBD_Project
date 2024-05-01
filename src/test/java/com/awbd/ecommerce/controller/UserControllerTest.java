@@ -43,14 +43,20 @@ public class UserControllerTest {
     Model model;
 
     @Test
-    @WithMockUser(username = "admin", password = "12345", roles = "ADMIN")
+    @WithMockUser(username = "guest", password = "12345", roles = "GUEST")
     public void findById_ShouldReturnUserProfile() throws Exception {
         Long userId = 1L;
-        UserDTO user = new UserDTO();
+
+        UserDTO currentLoggedUser = new UserDTO();
+        currentLoggedUser.setId(userId);
+        when(userService.findByUsername("gust")).thenReturn(currentLoggedUser);
+
         UserProfileDTO profile = new UserProfileDTO();
-        when(userService.findById(userId)).thenReturn(user);
-        when(userService.findRoleOfUserByUserId(userId)).thenReturn("USER");
+
+        when(userService.findById(userId)).thenReturn(currentLoggedUser);
+        when(userService.findRoleOfUserByUserId(userId)).thenReturn("ROLE_USER");
         when(userProfileService.findByUserId(userId)).thenReturn(profile);
+        when(userService.findByUsername("guest")).thenReturn(currentLoggedUser);
 
         mockMvc.perform(get("/users/profile/{id}", userId))
                 .andExpect(status().isOk())
@@ -58,10 +64,20 @@ public class UserControllerTest {
                 .andExpect(view().name("user-profile"));
     }
 
-    /*
-    TODO:
-    - test for guest trying to access user pages
-     */
+    @Test
+    @WithMockUser(username = "guest", password = "12345", roles = "GUEST")
+    public void findById_givenUnauthorizedId_shodReturnAccessDenied() throws Exception {
+        Long currentUserId = 2L;
+        Long pathId = 1L;
+
+        UserDTO currentLoggedUser = new UserDTO();
+        currentLoggedUser.setId(currentUserId);
+        when(userService.findByUsername("guest")).thenReturn(currentLoggedUser);
+
+        mockMvc.perform(get("/users/profile/{id}", pathId))
+                .andExpect(status().isOk())
+                .andExpect(view().name("accessDenied"));
+    }
 
     @Test
     @WithMockUser(username = "admin", password = "12345", roles = "ADMIN")
