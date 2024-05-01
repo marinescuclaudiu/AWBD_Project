@@ -1,6 +1,6 @@
 What to do next:
 - testing
-    - repository
+    - repository ---> Claudiu
     - service ---> Claudiu
     - controller --> Flavia
 
@@ -17,7 +17,7 @@ What to do next:
 3. Se va testa aplicația folosindu-se profiluri și două baze de date diferite, una dintre ele pentru etapa
    de testare. Se poate utiliza și o bază de date in-memory (H2). ✅
 
-4. Utilizare unit-tests/integration tests. 🔃
+4. Utilizare unit-tests/integration tests. ✅
 
 5. Se vor valida datele din formulare, se vor trata excepțiile.✅
 
