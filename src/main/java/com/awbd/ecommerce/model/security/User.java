@@ -33,11 +33,11 @@ public class User {
     private UserProfile userProfile;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = false)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Review> reviews;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = false)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Order> orders;
 
     @Singular

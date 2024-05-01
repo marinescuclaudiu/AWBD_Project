@@ -77,6 +77,11 @@
         <img style="width: 500px" th:src="@{/empty_cart.png}" alt="sleepy bag" />
     </div>
 
+    <a th:href="@{/orders}"
+       class="btn btn-primary btn-sm mb-3">
+        See All Orders
+    </a>
+
     <div th:each="productEntry : ${productsInCart}" class="mb-4">
         <div class="card">
             <div class="card-body">

@@ -111,8 +111,8 @@
                         Green
                     </p>
 
-                    <p class="font-weight-bold" th:text="'Current price: ' + ${product.price} + ' €'">
-                        180 €
+                    <p class="font-weight-bold" th:text="'Current price: ' + ${product.price} + '€'">
+                        180€
                     </p>
 
                     <form th:action="@{/card/add}" method="post">
@@ -172,7 +172,7 @@
     </table>
 
     <!--  Button to add a new review-->
-    <a th:href="@{'/products/' + ${product.id} + '/review-form'}"
+    <a th:href="@{'/products/' + ${product.id} + '/reviewForm'}"
        class="btn btn-primary btn-sm mb-3">
         Add Review
     </a>
