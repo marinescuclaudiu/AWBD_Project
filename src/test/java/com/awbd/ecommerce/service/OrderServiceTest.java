@@ -132,7 +132,6 @@ public class OrderServiceTest {
         });
     }
 
-
     @Test
     void findAll_Success() {
         // Arrange
@@ -153,6 +152,32 @@ public class OrderServiceTest {
         // Assert
         assertEquals(orders.size(), result.size());
         verify(orderRepository, times(1)).findAll();
+        verify(modelMapper, times(orders.size())).map(any(), eq(OrderDTO.class));
+    }
+
+    @Test
+    void findAllByUserId_Success() {
+        // Arrange
+        Long userId = 1L;
+        List<Order> orders = new ArrayList<>();
+        orders.add(new Order());
+        orders.add(new Order());
+
+        List<OrderDTO> orderDTOs = new ArrayList<>();
+        orderDTOs.add(new OrderDTO());
+        orderDTOs.add(new OrderDTO());
+
+        when(userRepository.existsById(userId)).thenReturn(true);
+        when(orderRepository.findAllByUserId(userId)).thenReturn(orders);
+        when(modelMapper.map(any(), eq(OrderDTO.class))).thenReturn(new OrderDTO());
+
+        // Act
+        List<OrderDTO> result = orderService.findAllByUserId(userId);
+
+        // Assert
+        assertEquals(orders.size(), result.size());
+        verify(userRepository, times(1)).existsById(userId);
+        verify(orderRepository, times(1)).findAllByUserId(userId);
         verify(modelMapper, times(orders.size())).map(any(), eq(OrderDTO.class));
     }
 
